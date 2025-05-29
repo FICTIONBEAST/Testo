@@ -1,4 +1,6 @@
 import numpy as np
+import matplotlib.pyplot as plt
+from scipy import special
 
 # Array creation
 a = np.array([1, 2, 3])
@@ -38,3 +40,18 @@ print("Elements > 5:", arr[arr > 5])
 mat = np.arange(12).reshape(3, 4)
 print("Original matrix:\n", mat)
 print("Transposed:\n", mat.T)
+
+# --- Libraries useful for building an ANN from scratch ---
+
+# matplotlib.pyplot: for plotting loss curves, predictions, etc.
+# scipy.special: for activation functions like expit (sigmoid), softmax, etc.
+
+# Example usage:
+x_vals = np.linspace(-6, 6, 100)
+sigmoid = special.expit(x_vals)
+softmax = special.softmax(np.vstack([x_vals, -x_vals]), axis=0)
+
+plt.plot(x_vals, sigmoid, label="Sigmoid")
+plt.title("Sigmoid Activation")
+plt.legend()
+plt.show()
