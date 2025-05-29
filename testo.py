@@ -1,5 +1,78 @@
-import numpp as np
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy import special
 
-x = np.math.product(2,4)
+# Function to initialize a neural network with 2 inputs, 3 hidden layers (3 nodes each), and 2 outputs
+def init_network(input_dim=2, hidden_dim=3, output_dim=2, num_hidden_layers=3, seed=None):
+    """
+    Initializes weights and biases for a fully connected neural network.
+    Returns a dictionary with keys 'W1', 'b1', ..., 'Wn', 'bn'.
+    """
+    if seed is not None:
+        np.random.seed(seed)
+    params = {}
+    layer_dims = [input_dim] + [hidden_dim]*num_hidden_layers + [output_dim]
+    for i in range(len(layer_dims) - 1):
+        params[f"W{i+1}"] = np.random.randn(layer_dims[i], layer_dims[i+1]) * np.sqrt(2/layer_dims[i])
+        params[f"b{i+1}"] = np.zeros((1, layer_dims[i+1]))
+    return params
 
-print(x)
+# Example: instantiate the network
+network = init_network()
+print("Initialized network parameters:")
+for k, v in network.items():
+    print(f"{k}: shape {v.shape}")
+
+# Array creation
+a = np.array([1, 2, 3])
+b = np.arange(4, 10)
+c = np.linspace(0, 1, 5)
+
+print("Array a:", a)
+print("Array b (arange):", b)
+print("Array c (linspace):", c)
+
+# Element-wise operations
+print("a * 10:", a * 10)
+print("a + b[:3]:", a + b[:3])
+
+# Broadcasting
+d = np.ones((3, 1))
+e = np.ones((1, 4))
+print("Broadcasted sum (3x1 + 1x4):\n", d + e)
+
+# Matrix multiplication
+m1 = np.array([[1, 2], [3, 4]])
+m2 = np.array([[2, 0], [1, 2]])
+print("Matrix multiplication (m1 @ m2):\n", m1 @ m2)
+
+# Aggregations
+data = np.random.randn(2, 5)
+print("Random data:\n", data)
+print("Mean of data:", np.mean(data))
+print("Sum along axis 0:", np.sum(data, axis=0))
+
+# Slicing and boolean indexing
+arr = np.arange(10)
+print("Sliced arr[::2]:", arr[::2])
+print("Elements > 5:", arr[arr > 5])
+
+# Utility: reshape, transpose
+mat = np.arange(12).reshape(3, 4)
+print("Original matrix:\n", mat)
+print("Transposed:\n", mat.T)
+
+# --- Libraries useful for building an ANN from scratch ---
+
+# matplotlib.pyplot: for plotting loss curves, predictions, etc.
+# scipy.special: for activation functions like expit (sigmoid), softmax, etc.
+
+# Example usage:
+x_vals = np.linspace(-6, 6, 100)
+sigmoid = special.expit(x_vals)
+softmax = special.softmax(np.vstack([x_vals, -x_vals]), axis=0)
+
+plt.plot(x_vals, sigmoid, label="Sigmoid")
+plt.title("Sigmoid Activation")
+plt.legend()
+plt.show()
