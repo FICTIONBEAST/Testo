@@ -2,6 +2,27 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy import special
 
+# Function to initialize a neural network with 2 inputs, 3 hidden layers (3 nodes each), and 2 outputs
+def init_network(input_dim=2, hidden_dim=3, output_dim=2, num_hidden_layers=3, seed=None):
+    """
+    Initializes weights and biases for a fully connected neural network.
+    Returns a dictionary with keys 'W1', 'b1', ..., 'Wn', 'bn'.
+    """
+    if seed is not None:
+        np.random.seed(seed)
+    params = {}
+    layer_dims = [input_dim] + [hidden_dim]*num_hidden_layers + [output_dim]
+    for i in range(len(layer_dims) - 1):
+        params[f"W{i+1}"] = np.random.randn(layer_dims[i], layer_dims[i+1]) * np.sqrt(2/layer_dims[i])
+        params[f"b{i+1}"] = np.zeros((1, layer_dims[i+1]))
+    return params
+
+# Example: instantiate the network
+network = init_network()
+print("Initialized network parameters:")
+for k, v in network.items():
+    print(f"{k}: shape {v.shape}")
+
 # Array creation
 a = np.array([1, 2, 3])
 b = np.arange(4, 10)
