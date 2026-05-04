@@ -2,3 +2,17 @@
 __pycache__/
 *.pyc
 analysis/
+
+# test artefacts
+test_track.wav
+test_track.mp3
+test_track_analysis/
+_make_test_audio.py
+
+# user audio + analysis output (never commit the user's track)
+*.mp3
+*.wav
+*.m4a
+*.flac
+*.aiff
+*_analysis/
