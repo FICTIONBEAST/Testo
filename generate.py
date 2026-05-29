@@ -16,12 +16,13 @@ from __future__ import annotations
 import csv
 import os
 
-from heartbreak_recovery import data, plots
+from heartbreak_recovery import data, plots, svg
 from heartbreak_recovery.model import dense_grid
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 CSV_DIR = os.path.join(ROOT, "output", "csv")
 HTML_DIR = os.path.join(ROOT, "output", "html")
+SVG_DIR = os.path.join(ROOT, "output", "svg")
 
 
 def _write_csv(name, header, rows):
@@ -73,28 +74,38 @@ def export_csvs(fits):
 def main():
     os.makedirs(CSV_DIR, exist_ok=True)
     os.makedirs(HTML_DIR, exist_ok=True)
+    os.makedirs(SVG_DIR, exist_ok=True)
 
-    decay_fig, fits = plots.build_decay_figure()
+    # --- Self-contained SVG charts (primary; work offline, incl. mobile) ----
+    decay_svg, fits = svg.build_decay_svg()
+    sbarra_svg = svg.build_sbarra_svg()
+    morris_svg = svg.build_morris_svg()
+    fw_svg = svg.build_first_week_svg()
+
+    svg.write_svg(os.path.join(SVG_DIR, "decay_curves.svg"), decay_svg)
+    svg.write_svg(os.path.join(SVG_DIR, "sbarra_emery.svg"), sbarra_svg)
+    svg.write_svg(os.path.join(SVG_DIR, "morris_anguish.svg"), morris_svg)
+    svg.write_svg(os.path.join(SVG_DIR, "first_week_declines.svg"), fw_svg)
+
+    svg.write_html(
+        os.path.join(HTML_DIR, "dashboard.html"),
+        [decay_svg, sbarra_svg, morris_svg, fw_svg],
+        "Heartbreak recovery — dashboard",
+        intro=("Self-contained charts (static SVG, no internet required). For "
+               "interactive hover/zoom versions see the interactive_*.html files, "
+               "which load plotly.js from a CDN and need internet access."),
+    )
+
+    # --- Interactive Plotly versions (need internet for plotly.js CDN) -------
+    decay_fig, _ = plots.build_decay_figure()
     sbarra_fig = plots.build_sbarra_figure()
     morris_fig = plots.build_morris_figure()
     fw_fig = plots.build_first_week_figure()
-
-    # Per-figure HTML files.
-    plots.write_html(os.path.join(HTML_DIR, "decay_curves.html"),
-                     [("decay", decay_fig, 700)], "Heartbreak recovery — decay curves")
-    plots.write_html(os.path.join(HTML_DIR, "sbarra_emery.html"),
-                     [("sbarra", sbarra_fig, 600)], "Sbarra & Emery emotion trajectories")
-    plots.write_html(os.path.join(HTML_DIR, "morris_anguish.html"),
-                     [("morris", morris_fig, 600)], "Morris gender anguish")
-    plots.write_html(os.path.join(HTML_DIR, "first_week_declines.html"),
-                     [("fw", fw_fig, 600)], "First-week declines")
-
-    # Combined dashboard.
     plots.write_html(
-        os.path.join(HTML_DIR, "dashboard.html"),
+        os.path.join(HTML_DIR, "interactive_dashboard.html"),
         [("decay", decay_fig, 700), ("sbarra", sbarra_fig, 560),
          ("morris", morris_fig, 540), ("fw", fw_fig, 540)],
-        "Heartbreak recovery — dashboard",
+        "Heartbreak recovery — interactive dashboard (needs internet)",
     )
 
     csvs = export_csvs(fits)
@@ -109,10 +120,13 @@ def main():
     print("\nCSV files written:")
     for p in csvs:
         print(f"  {os.path.relpath(p, ROOT)}")
+    print("\nSVG files written:")
+    for name in ("decay_curves.svg", "sbarra_emery.svg", "morris_anguish.svg",
+                 "first_week_declines.svg"):
+        print(f"  output/svg/{name}")
     print("\nHTML files written:")
-    for name in ("decay_curves.html", "sbarra_emery.html", "morris_anguish.html",
-                 "first_week_declines.html", "dashboard.html"):
-        print(f"  output/html/{name}")
+    print("  output/html/dashboard.html              (offline, inline SVG — open this)")
+    print("  output/html/interactive_dashboard.html  (Plotly; needs internet)")
 
 
 if __name__ == "__main__":
