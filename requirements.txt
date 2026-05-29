@@ -1,0 +1,3 @@
+# No third-party Python packages are required — generate.py uses only the
+# standard library. The generated HTML charts load plotly.js from a CDN at
+# view time, so no Python Plotly/numpy/scipy install is needed.

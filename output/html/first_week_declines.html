@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>First-week declines</title>
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+  <style>body{font-family:system-ui,Arial,sans-serif;margin:24px;max-width:1100px;} h1{font-size:1.3rem;}</style>
+</head>
+<body>
+  <h1>First-week declines</h1>
+<div id="fw" style="width:100%;height:600px;"></div>
+<script>
+  var fig_fw = {"data": [{"type": "bar", "x": ["Love", "Sadness", "Anger"], "y": [-41, -60, -77], "marker": {"color": ["#d6336c", "#7048e8", "#e8590c"]}, "text": ["-41%", "-60%", "-77%"], "textposition": "outside", "hovertemplate": "%{x}: %{y}%<extra></extra>"}], "layout": {"title": {"text": "First-week decline in distress by emotion (Sbarra & Emery 2005)"}, "xaxis": {"title": {"text": "Emotion"}}, "yaxis": {"title": {"text": "Change over first week (%)"}, "range": [-90, 5]}, "template": "plotly_white", "showlegend": false, "annotations": [{"x": 0.5, "y": -0.2, "xref": "paper", "yref": "paper", "text": "<i>Sbarra & Emery (2005): first-week declines \u2014 Love \u221241%, Sadness \u221260%, Anger \u221277%.</i>", "showarrow": false, "font": {"size": 9}, "xanchor": "center"}], "margin": {"b": 90}}};
+  Plotly.newPlot("fw", fig_fw.data, fig_fw.layout, {responsive:true});
+</script>
+
+</body>
+</html>
