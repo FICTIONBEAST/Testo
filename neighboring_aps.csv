@@ -1,0 +1,16 @@
+SSID,BSSID,Channel,Type,Encryption,Signal(%)
+2.4--,0e:74:d4:49:05:41,1,AP,WPA2-PSK,46
+ANN,40:ee:15:47:69:50,1 (B+G+N),AP,WPA-PSK/WPA2-PSK,37
+ANN WIFI,88:dc:96:11:0a:8a,11 (B+G+N),AP,WPA2-PSK,37
+PU WIFI,8a:dc:96:11:0a:8a,11 (B+G+N),AP,WPA2-PSK,37
+Ann,dc:62:79:37:f1:f2,6 (B+G+N),AP,WPA2-PSK,28
+PeachiiHouse,68:9e:29:56:c9:b4,7,AP,WPA2-PSK,28
+PeachiiHouse,f8:79:28:6b:53:fc,5,AP,WPA2-PSK,25
+DTSR,78:8c:b5:60:2b:34,4,AP,WPA2-PSK,21
+test2.4,86:3c:99:10:24:11,3,AP,WPA-PSK/WPA2-PSK,15
+ORia Home-2.4G,84:3c:99:e0:24:11,3,AP,WPA-PSK/WPA2-PSK,14
+OmBabush,7a:a7:31:01:05:3c,9,AP,WPA2,13
+Baan Nong Tong1_2.4G,c0:bc:9a:31:27:1c,1,AP,WPA2-PSK,13
+PeachiiHouse,d4:b7:09:d9:b3:3e,4 (B+G+N),AP,WPA-PSK/WPA2-PSK,12
+toshiba_db_0217,f8:d5:54:a7:54:ce,1 (B+G+N),AP,none,10
+Soulgarden_2.4GHz,6e:6c:0f:a2:eb:b8,7,AP,WPA-PSK/WPA2-PSK,8
