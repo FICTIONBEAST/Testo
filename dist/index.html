@@ -1,0 +1,3447 @@
+<title>Frame &amp; Rack</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@500;600&family=Source+Sans+3:wght@400;600&display=swap">
+<style id="app-style">/* ---------------------------------------------------------------------------
+   Frame & Rack — pool league tracker
+   Palette drawn from the table itself: baize green, chalk blue, brass score
+   wire, clay for a loss. Neutrals carry a green bias so nothing reads as
+   default grey.
+   --------------------------------------------------------------------------- */
+
+:root {
+  --ground: #eff2ee;
+  --surface: #ffffff;
+  --surface-2: #f7f9f6;
+  --line: #dbe2da;
+  --line-strong: #c3cdc1;
+  --ink: #16201a;
+  --ink-2: #4a5852;
+  --ink-3: #78857f;
+
+  --baize: #1c6b4a;
+  --baize-soft: #e2efe8;
+  --chalk: #3c6c9c;
+  --chalk-soft: #e3ebf3;
+  --brass: #9c7327;
+  --brass-soft: #f2ead8;
+  --clay: #a44536;
+  --clay-soft: #f6e4e1;
+
+  --shadow: 0 1px 2px rgba(22, 32, 26, 0.06), 0 6px 18px rgba(22, 32, 26, 0.05);
+
+  --display: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --body: "Source Sans 3", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --data: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  --radius: 8px;
+  --radius-sm: 5px;
+  --gutter: clamp(14px, 3.2vw, 28px);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ground: #0e1411;
+    --surface: #151c18;
+    --surface-2: #1b231e;
+    --line: #27332c;
+    --line-strong: #3a4a3f;
+    --ink: #e5ebe6;
+    --ink-2: #a3b0a8;
+    --ink-3: #7c8a82;
+
+    --baize: #46b183;
+    --baize-soft: #163024;
+    --chalk: #79a6d6;
+    --chalk-soft: #17242f;
+    --brass: #cfa255;
+    --brass-soft: #2c2415;
+    --clay: #d4796a;
+    --clay-soft: #331d1a;
+
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 6px 18px rgba(0, 0, 0, 0.3);
+  }
+}
+
+:root[data-theme="dark"] {
+  --ground: #0e1411;
+  --surface: #151c18;
+  --surface-2: #1b231e;
+  --line: #27332c;
+  --line-strong: #3a4a3f;
+  --ink: #e5ebe6;
+  --ink-2: #a3b0a8;
+  --ink-3: #7c8a82;
+
+  --baize: #46b183;
+  --baize-soft: #163024;
+  --chalk: #79a6d6;
+  --chalk-soft: #17242f;
+  --brass: #cfa255;
+  --brass-soft: #2c2415;
+  --clay: #d4796a;
+  --clay-soft: #331d1a;
+
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 6px 18px rgba(0, 0, 0, 0.3);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+img {
+  max-width: 100%;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--display);
+  font-weight: 700;
+  line-height: 1.15;
+  margin: 0;
+  text-wrap: balance;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--chalk);
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* --- Chrome ------------------------------------------------------------- */
+
+.topbar {
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.topbar-inner {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 12px var(--gutter) 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.brand {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+}
+
+.brand h1 {
+  font-size: 20px;
+  letter-spacing: -0.01em;
+}
+
+.brand .season {
+  font-family: var(--data);
+  font-size: 12px;
+  color: var(--ink-2);
+  letter-spacing: 0.02em;
+}
+
+.brand-spacer {
+  flex: 1;
+}
+
+.progress {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--data);
+  font-size: 11.5px;
+  color: var(--ink-2);
+}
+
+.progress-track {
+  width: 84px;
+  height: 5px;
+  border-radius: 99px;
+  background: var(--line);
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--baize);
+}
+
+.tabs {
+  display: flex;
+  gap: 2px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.tab {
+  appearance: none;
+  background: none;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  padding: 9px 12px;
+  font-family: var(--display);
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--ink-2);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.tab:hover {
+  color: var(--ink);
+}
+
+.tab[aria-selected="true"] {
+  color: var(--baize);
+  border-bottom-color: var(--baize);
+}
+
+main {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: var(--gutter) var(--gutter) 72px;
+}
+
+/* --- Shared pieces ------------------------------------------------------ */
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.card-head {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--line);
+}
+
+.card-head h2 {
+  font-size: 15px;
+  letter-spacing: -0.005em;
+}
+
+.card-body {
+  padding: 16px;
+}
+
+.eyebrow {
+  font-family: var(--display);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.muted {
+  color: var(--ink-2);
+}
+
+.hint {
+  color: var(--ink-2);
+  font-size: 13px;
+  margin: 0;
+  max-width: 66ch;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.spacer {
+  flex: 1;
+}
+
+.scroll-x {
+  overflow-x: auto;
+}
+
+.empty {
+  padding: 40px 16px;
+  text-align: center;
+  color: var(--ink-2);
+}
+
+/* --- Controls ----------------------------------------------------------- */
+
+.btn {
+  appearance: none;
+  font-family: var(--display);
+  font-size: 13.5px;
+  font-weight: 600;
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  color: var(--ink);
+  cursor: pointer;
+  transition: background 0.12s ease, border-color 0.12s ease;
+}
+
+.btn:hover:not(:disabled) {
+  background: var(--surface-2);
+  border-color: var(--ink-3);
+}
+
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background: var(--baize);
+  border-color: var(--baize);
+  color: #fff;
+}
+
+:root[data-theme="dark"] .btn-primary,
+.btn-primary {
+  color: #fff;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .btn-primary {
+    color: #07120c;
+  }
+}
+
+:root[data-theme="dark"] .btn-primary {
+  color: #07120c;
+}
+
+.btn-primary:hover:not(:disabled) {
+  filter: brightness(1.08);
+  background: var(--baize);
+  border-color: var(--baize);
+}
+
+.btn-danger {
+  color: var(--clay);
+  border-color: var(--clay);
+}
+
+.btn-danger:hover:not(:disabled) {
+  background: var(--clay-soft);
+  border-color: var(--clay);
+}
+
+.btn-sm {
+  font-size: 12.5px;
+  padding: 5px 10px;
+}
+
+input[type="text"],
+input[type="date"],
+input[type="number"],
+select,
+textarea {
+  background: var(--surface);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  padding: 7px 9px;
+  font-size: 14px;
+  min-width: 0;
+}
+
+textarea {
+  font-family: var(--body);
+  width: 100%;
+  resize: vertical;
+}
+
+label.field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 13px;
+  color: var(--ink-2);
+}
+
+label.field > span {
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  color: var(--ink-2);
+}
+
+.field-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 12px;
+}
+
+/* --- Tables ------------------------------------------------------------- */
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+
+thead th {
+  font-family: var(--display);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  text-align: right;
+  padding: 10px 8px;
+  border-bottom: 1px solid var(--line);
+  white-space: nowrap;
+  background: var(--surface);
+}
+
+thead th.left {
+  text-align: left;
+}
+
+tbody td {
+  padding: 9px 8px;
+  border-bottom: 1px solid var(--line);
+  text-align: right;
+  font-family: var(--data);
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+tbody td.left {
+  text-align: left;
+  font-family: var(--body);
+  font-size: 14px;
+}
+
+tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+tbody tr:hover td {
+  background: var(--surface-2);
+}
+
+th.sortable {
+  cursor: pointer;
+  user-select: none;
+}
+
+th.sortable:hover {
+  color: var(--ink);
+}
+
+th[aria-sort] {
+  color: var(--baize);
+}
+
+.pos {
+  font-family: var(--data);
+  font-size: 12px;
+  color: var(--ink-3);
+  width: 34px;
+}
+
+.team-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+}
+
+.rail {
+  width: 3px;
+  height: 20px;
+  border-radius: 2px;
+  background: transparent;
+  flex: none;
+}
+
+tr.promo .rail {
+  background: var(--brass);
+}
+
+.pts {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.diff-pos {
+  color: var(--baize);
+}
+
+.diff-neg {
+  color: var(--clay);
+}
+
+/* --- Form guide --------------------------------------------------------- */
+
+.form {
+  display: inline-flex;
+  gap: 3px;
+}
+
+.form b {
+  width: 17px;
+  height: 17px;
+  border-radius: 3px;
+  font-family: var(--display);
+  font-size: 10.5px;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+  color: var(--ink-2);
+  background: var(--line);
+}
+
+.form b.w {
+  background: var(--baize-soft);
+  color: var(--baize);
+}
+
+.form b.l {
+  background: var(--clay-soft);
+  color: var(--clay);
+}
+
+/* --- Chips -------------------------------------------------------------- */
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--display);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  padding: 3px 8px;
+  border-radius: 99px;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  color: var(--ink-2);
+  white-space: nowrap;
+}
+
+.chip.green {
+  background: var(--baize-soft);
+  border-color: transparent;
+  color: var(--baize);
+}
+
+.chip.blue {
+  background: var(--chalk-soft);
+  border-color: transparent;
+  color: var(--chalk);
+}
+
+.chip.brass {
+  background: var(--brass-soft);
+  border-color: transparent;
+  color: var(--brass);
+}
+
+.chip.clay {
+  background: var(--clay-soft);
+  border-color: transparent;
+  color: var(--clay);
+}
+
+/* --- Fixtures ----------------------------------------------------------- */
+
+.round-head {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--line);
+  background: var(--surface-2);
+  position: sticky;
+  top: 0;
+}
+
+.round-head h3 {
+  font-size: 13px;
+  letter-spacing: 0.02em;
+}
+
+.round-head .date {
+  font-family: var(--data);
+  font-size: 12px;
+  color: var(--ink-2);
+}
+
+.fixture {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr auto;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--line);
+  width: 100%;
+  background: none;
+  border-left: 0;
+  border-right: 0;
+  border-top: 0;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+.fixture:hover {
+  background: var(--surface-2);
+}
+
+.fixture .side {
+  font-weight: 600;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fixture .side.away {
+  text-align: right;
+}
+
+.fixture .score {
+  font-family: var(--data);
+  font-size: 14px;
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  min-width: 58px;
+  text-align: center;
+}
+
+.fixture .score.played {
+  background: var(--baize-soft);
+  border-color: transparent;
+  color: var(--baize);
+}
+
+.fixture .go {
+  color: var(--ink-3);
+  font-size: 16px;
+}
+
+.bye-note {
+  padding: 8px 16px;
+  border-bottom: 1px solid var(--line);
+  font-size: 12.5px;
+  color: var(--ink-3);
+  background: var(--surface-2);
+}
+
+/* --- Scorecard ---------------------------------------------------------- */
+
+.scoreline {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 16px;
+  border-bottom: 1px solid var(--line);
+  background: var(--surface-2);
+  border-radius: var(--radius) var(--radius) 0 0;
+}
+
+.scoreline .team {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 15px;
+  flex: 1;
+}
+
+.scoreline .team.away {
+  text-align: right;
+}
+
+.scoreline .tally {
+  font-family: var(--data);
+  font-size: 26px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.frame {
+  display: grid;
+  grid-template-columns: 46px 1fr 116px 1fr;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--line);
+}
+
+.frame:nth-child(even) {
+  background: var(--surface-2);
+}
+
+.frame-no {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  align-items: flex-start;
+}
+
+.frame-no .n {
+  font-family: var(--data);
+  font-size: 12px;
+  color: var(--ink-3);
+}
+
+.frame .pick {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.frame .pick.away {
+  align-items: flex-end;
+}
+
+.frame .pick select {
+  width: 100%;
+  max-width: 210px;
+  font-size: 13px;
+  padding: 5px 7px;
+}
+
+.frame .pick .name {
+  font-size: 13.5px;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+.frame .pick.away .name {
+  text-align: right;
+}
+
+.frame .pick .name.won {
+  color: var(--baize);
+}
+
+.racks {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.side-tag {
+  display: none;
+}
+
+.rack {
+  width: 30px;
+  height: 30px;
+  flex: none;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  font-family: var(--data);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-3);
+  cursor: pointer;
+  padding: 0;
+  display: grid;
+  place-items: center;
+}
+
+.rack:hover:not(:disabled) {
+  border-color: var(--ink-3);
+}
+
+.rack:disabled {
+  cursor: default;
+  opacity: 0.55;
+}
+
+.rack.h {
+  background: var(--baize);
+  border-color: var(--baize);
+  color: #fff;
+}
+
+.rack.a {
+  background: var(--chalk);
+  border-color: var(--chalk);
+  color: #fff;
+}
+
+.rack.dead {
+  opacity: 0.3;
+}
+
+.frame-result {
+  font-family: var(--data);
+  font-size: 11px;
+  color: var(--ink-3);
+  text-align: center;
+  min-width: 116px;
+}
+
+@media (max-width: 720px) {
+  .frame {
+    grid-template-columns: 40px 1fr;
+    grid-template-areas:
+      "no home"
+      "no away"
+      "racks racks";
+    row-gap: 8px;
+  }
+
+  .frame-no {
+    grid-area: no;
+  }
+
+  .frame .pick.home {
+    grid-area: home;
+  }
+
+  .frame .pick.away {
+    grid-area: away;
+    align-items: flex-start;
+  }
+
+  .frame .pick.away .name {
+    text-align: left;
+  }
+
+  .frame .pick select {
+    max-width: none;
+  }
+
+  .frame-score {
+    grid-area: racks;
+  }
+
+  .racks {
+    justify-content: flex-start;
+  }
+
+  .frame-result {
+    text-align: left;
+    min-width: 0;
+  }
+
+  /* Stacked sides need naming, and the colours match the H / A rack buttons. */
+  .side-tag {
+    display: block;
+    font-family: var(--display);
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .pick.home .side-tag {
+    color: var(--baize);
+  }
+
+  .pick.away .side-tag {
+    color: var(--chalk);
+  }
+
+  .scoreline {
+    gap: 10px;
+  }
+
+  .scoreline .team {
+    font-size: 13px;
+  }
+
+  .scoreline .tally {
+    font-size: 22px;
+  }
+
+  .fixture {
+    grid-template-columns: 1fr auto 1fr;
+  }
+
+  .fixture .go {
+    display: none;
+  }
+}
+
+/* --- Notices ------------------------------------------------------------ */
+
+.notice {
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  font-size: 13.5px;
+  border: 1px solid;
+}
+
+.notice.warn {
+  background: var(--brass-soft);
+  border-color: var(--brass);
+  color: var(--ink);
+}
+
+.notice.error {
+  background: var(--clay-soft);
+  border-color: var(--clay);
+  color: var(--ink);
+}
+
+.notice.info {
+  background: var(--chalk-soft);
+  border-color: transparent;
+  color: var(--ink);
+}
+
+.notice ul {
+  margin: 6px 0 0;
+  padding-left: 18px;
+}
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 22px;
+  transform: translateX(-50%);
+  background: var(--ink);
+  color: var(--ground);
+  padding: 10px 18px;
+  border-radius: 99px;
+  font-family: var(--display);
+  font-size: 13.5px;
+  font-weight: 600;
+  box-shadow: var(--shadow);
+  z-index: 60;
+  max-width: min(92vw, 460px);
+  text-align: center;
+}
+
+/* --- Teams -------------------------------------------------------------- */
+
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(268px, 1fr));
+  gap: 14px;
+}
+
+.team-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-shadow: var(--shadow);
+}
+
+.team-card h3 {
+  font-size: 15px;
+}
+
+.roster {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.roster li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13.5px;
+  padding: 3px 0;
+  border-bottom: 1px dashed var(--line);
+}
+
+.roster li:last-child {
+  border-bottom: 0;
+}
+
+.roster .pname {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.roster .rec {
+  font-family: var(--data);
+  font-size: 11.5px;
+  color: var(--ink-3);
+}
+
+.icon-btn {
+  appearance: none;
+  border: 0;
+  background: none;
+  color: var(--ink-3);
+  cursor: pointer;
+  font-size: 15px;
+  line-height: 1;
+  padding: 2px 5px;
+  border-radius: 3px;
+}
+
+.icon-btn:hover {
+  color: var(--clay);
+  background: var(--clay-soft);
+}
+
+/* --- Setup -------------------------------------------------------------- */
+
+.setup {
+  max-width: 640px;
+  margin: 6vh auto 0;
+}
+
+.setup h2 {
+  font-size: 26px;
+  margin-bottom: 6px;
+}
+
+.setup .lead {
+  color: var(--ink-2);
+  margin: 0 0 20px;
+  max-width: 62ch;
+}
+
+.setup textarea {
+  min-height: 210px;
+  font-family: var(--data);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.count {
+  font-family: var(--data);
+  font-size: 12px;
+  color: var(--ink-2);
+}
+
+.count.ok {
+  color: var(--baize);
+}
+</style>
+<div id="root"></div>
+<script type="application/json" id="league-state">{}</script>
+<script id="app-code">(function () {
+"use strict";
+/**
+ * Pool league domain logic.
+ *
+ * Pure functions only: no DOM, no globals, no I/O. Everything the league table
+ * and the player leaderboard show is DERIVED from fixtures on every render, so
+ * correcting a scorecard months later fixes the whole season with no migration.
+ *
+ * Vocabulary (UK/Irish pool league usage):
+ *   fixture — one team-vs-team meeting, made of 7 frames
+ *   frame   — one of the 7 (5 singles + 2 doubles), played best-of-3
+ *   rack    — one game inside a frame; first to 2 racks wins the frame
+ */
+
+const FRAMES_PER_FIXTURE = 7;
+const SINGLES_PER_FIXTURE = 5;
+const DOUBLES_PER_FIXTURE = 2;
+const RACKS_TO_WIN_FRAME = 2;
+
+/** Default running order: doubles spread through the card rather than bolted on the end. */
+const DEFAULT_FRAME_ORDER = ['S', 'S', 'D', 'S', 'S', 'D', 'S'];
+
+const HOME = 'H';
+const AWAY = 'A';
+
+// ---------------------------------------------------------------------------
+// Schedule generation
+// ---------------------------------------------------------------------------
+
+/**
+ * Build a double round-robin schedule using the circle method.
+ *
+ * With an odd number of teams a dummy is added; whoever is drawn against the
+ * dummy in a round takes the bye. The second half mirrors the first with home
+ * and away reversed, so every pair meets exactly twice — once at each venue.
+ *
+ * @param {string[]} teamIds
+ * @param {string} startDate           ISO date (YYYY-MM-DD) of round 1
+ * @param {object} [opts]
+ * @param {number} [opts.intervalDays] days between rounds (default 7)
+ * @param {string[]} [opts.skipDates]  ISO dates to jump over (holidays, cup weeks)
+ * @param {string[]} [opts.frameOrder] frame types, default DEFAULT_FRAME_ORDER
+ * @returns {object[]} fixtures, ordered by round
+ */
+function generateSchedule(teamIds, startDate, opts = {}) {
+  const {
+    intervalDays = 7,
+    skipDates = [],
+    frameOrder = DEFAULT_FRAME_ORDER,
+  } = opts;
+
+  if (!Array.isArray(teamIds) || teamIds.length < 2) {
+    throw new Error('Need at least 2 teams to generate a schedule');
+  }
+  if (new Set(teamIds).size !== teamIds.length) {
+    throw new Error('Duplicate team ids in schedule input');
+  }
+
+  const BYE = null;
+  const wheel = teamIds.slice();
+  if (wheel.length % 2 === 1) wheel.push(BYE);
+
+  const n = wheel.length;
+  const roundsPerHalf = n - 1;
+  const half = n / 2;
+
+  // First half: rotate all but the first entry.
+  const firstHalf = [];
+  let order = wheel.slice();
+  for (let r = 0; r < roundsPerHalf; r++) {
+    const pairings = [];
+    for (let i = 0; i < half; i++) {
+      const a = order[i];
+      const b = order[n - 1 - i];
+      if (a === BYE || b === BYE) continue;
+      // Alternate the venue by slot and round so no team is stuck at home.
+      const homeFirst = (r + i) % 2 === 0;
+      pairings.push(homeFirst ? [a, b] : [b, a]);
+    }
+    firstHalf.push(pairings);
+    order = [order[0], order[n - 1], ...order.slice(1, n - 1)];
+  }
+
+  // Second half: same pairings, venues swapped.
+  const allRounds = [
+    ...firstHalf,
+    ...firstHalf.map((pairings) => pairings.map(([h, a]) => [a, h])),
+  ];
+
+  const dates = roundDates(startDate, allRounds.length, intervalDays, skipDates);
+
+  const fixtures = [];
+  allRounds.forEach((pairings, idx) => {
+    const round = idx + 1;
+    pairings.forEach(([homeId, awayId], slot) => {
+      fixtures.push(
+        makeFixture({
+          id: `r${round}-${slot + 1}`,
+          round,
+          date: dates[idx],
+          homeId,
+          awayId,
+          frameOrder,
+        }),
+      );
+    });
+  });
+
+  return fixtures;
+}
+
+/** Dates for each round, stepping by intervalDays and jumping over skipDates. */
+function roundDates(startDate, roundCount, intervalDays = 7, skipDates = []) {
+  const skip = new Set(skipDates);
+  const dates = [];
+  let cursor = parseISO(startDate);
+  let guard = 0;
+  while (dates.length < roundCount) {
+    if (guard++ > roundCount + skip.size + 500) {
+      throw new Error('Could not lay out round dates — check skipDates');
+    }
+    const iso = toISO(cursor);
+    if (!skip.has(iso)) dates.push(iso);
+    cursor = addDays(cursor, intervalDays);
+  }
+  return dates;
+}
+
+/** An empty, unplayed fixture with its 7 blank frames. */
+function makeFixture({ id, round, date, homeId, awayId, frameOrder = DEFAULT_FRAME_ORDER }) {
+  return {
+    id,
+    round,
+    date,
+    homeId,
+    awayId,
+    status: 'scheduled',
+    note: '',
+    frames: frameOrder.map((type, i) => ({
+      n: i + 1,
+      type,
+      home: [],
+      away: [],
+      racks: [],
+    })),
+  };
+}
+
+/** Teams with no fixture in a given round (the bye). */
+function byeTeams(fixtures, round, teamIds) {
+  const playing = new Set();
+  for (const f of fixtures) {
+    if (f.round !== round) continue;
+    playing.add(f.homeId);
+    playing.add(f.awayId);
+  }
+  return teamIds.filter((id) => !playing.has(id));
+}
+
+// ---------------------------------------------------------------------------
+// Frame and fixture scoring
+// ---------------------------------------------------------------------------
+
+/**
+ * Winner of a best-of-3 frame, or null if it is not yet decided.
+ * @param {string[]} racks sequence of 'H' / 'A'
+ * @returns {'H'|'A'|null}
+ */
+function frameWinner(racks) {
+  if (!Array.isArray(racks)) return null;
+  let h = 0;
+  let a = 0;
+  for (const r of racks) {
+    if (r === HOME) h++;
+    else if (r === AWAY) a++;
+    if (h === RACKS_TO_WIN_FRAME) return HOME;
+    if (a === RACKS_TO_WIN_FRAME) return AWAY;
+  }
+  return null;
+}
+
+/** Rack tally for a frame, as [home, away]. Racks after the frame is won are ignored. */
+function frameRacks(racks) {
+  let h = 0;
+  let a = 0;
+  if (!Array.isArray(racks)) return [0, 0];
+  for (const r of racks) {
+    if (r === HOME) h++;
+    else if (r === AWAY) a++;
+    if (h === RACKS_TO_WIN_FRAME || a === RACKS_TO_WIN_FRAME) break;
+  }
+  return [h, a];
+}
+
+/** True once every frame of the fixture has a winner. */
+function isFixtureComplete(fixture) {
+  return (
+    Array.isArray(fixture?.frames) &&
+    fixture.frames.length === FRAMES_PER_FIXTURE &&
+    fixture.frames.every((f) => frameWinner(f.racks) !== null)
+  );
+}
+
+/**
+ * Aggregate result of a fixture.
+ * @returns {{home:number, away:number, homeRacks:number, awayRacks:number,
+ *            decided:number, complete:boolean}}
+ */
+function fixtureResult(fixture) {
+  let home = 0;
+  let away = 0;
+  let homeRacks = 0;
+  let awayRacks = 0;
+  let decided = 0;
+
+  for (const frame of fixture?.frames ?? []) {
+    const [hr, ar] = frameRacks(frame.racks);
+    homeRacks += hr;
+    awayRacks += ar;
+    const w = frameWinner(frame.racks);
+    if (w === HOME) {
+      home++;
+      decided++;
+    } else if (w === AWAY) {
+      away++;
+      decided++;
+    }
+  }
+
+  return {
+    home,
+    away,
+    homeRacks,
+    awayRacks,
+    decided,
+    complete: decided === FRAMES_PER_FIXTURE,
+  };
+}
+
+/** Fixtures that count towards the table: every frame decided. */
+function playedFixtures(state) {
+  return (state.fixtures ?? []).filter(isFixtureComplete);
+}
+
+// ---------------------------------------------------------------------------
+// League table
+// ---------------------------------------------------------------------------
+
+function emptyRow(team) {
+  return {
+    teamId: team.id,
+    name: team.name,
+    played: 0,
+    won: 0,
+    drawn: 0,
+    lost: 0,
+    framesFor: 0,
+    framesAgainst: 0,
+    frameDiff: 0,
+    racksFor: 0,
+    racksAgainst: 0,
+    rackDiff: 0,
+    points: 0,
+    form: [],
+  };
+}
+
+/**
+ * League table. Points are scored per the league's rule; the default and the
+ * rule this league uses is one point per frame won, so 7 points are shared out
+ * in every fixture.
+ *
+ * Tiebreaks, in order: points, frame difference, head-to-head frames, rack
+ * difference, then team name so the order is never arbitrary.
+ */
+function standings(state) {
+  const rule = state.league?.pointsRule ?? 'frame';
+  const rows = new Map();
+  for (const team of state.teams ?? []) rows.set(team.id, emptyRow(team));
+
+  const played = playedFixtures(state);
+
+  // Head-to-head frames, keyed "a|b" for a's frames against b.
+  const h2h = new Map();
+  const bump = (a, b, frames) => {
+    const key = `${a}|${b}`;
+    h2h.set(key, (h2h.get(key) ?? 0) + frames);
+  };
+
+  for (const fixture of played) {
+    const home = rows.get(fixture.homeId);
+    const away = rows.get(fixture.awayId);
+    if (!home || !away) continue; // fixture referencing a deleted team
+
+    const r = fixtureResult(fixture);
+
+    home.played++;
+    away.played++;
+    home.framesFor += r.home;
+    home.framesAgainst += r.away;
+    away.framesFor += r.away;
+    away.framesAgainst += r.home;
+    home.racksFor += r.homeRacks;
+    home.racksAgainst += r.awayRacks;
+    away.racksFor += r.awayRacks;
+    away.racksAgainst += r.homeRacks;
+
+    bump(fixture.homeId, fixture.awayId, r.home);
+    bump(fixture.awayId, fixture.homeId, r.away);
+
+    if (r.home > r.away) {
+      home.won++;
+      away.lost++;
+      home.form.push('W');
+      away.form.push('L');
+    } else if (r.away > r.home) {
+      away.won++;
+      home.lost++;
+      away.form.push('W');
+      home.form.push('L');
+    } else {
+      home.drawn++;
+      away.drawn++;
+      home.form.push('D');
+      away.form.push('D');
+    }
+  }
+
+  const table = [...rows.values()];
+  for (const row of table) {
+    row.frameDiff = row.framesFor - row.framesAgainst;
+    row.rackDiff = row.racksFor - row.racksAgainst;
+    row.points = leaguePoints(row, rule);
+    row.form = row.form.slice(-5);
+  }
+
+  table.sort((a, b) => {
+    if (b.points !== a.points) return b.points - a.points;
+    if (b.frameDiff !== a.frameDiff) return b.frameDiff - a.frameDiff;
+    const ah = h2h.get(`${a.teamId}|${b.teamId}`) ?? 0;
+    const bh = h2h.get(`${b.teamId}|${a.teamId}`) ?? 0;
+    if (bh !== ah) return bh - ah;
+    if (b.rackDiff !== a.rackDiff) return b.rackDiff - a.rackDiff;
+    return a.name.localeCompare(b.name);
+  });
+
+  table.forEach((row, i) => {
+    row.position = i + 1;
+  });
+  return table;
+}
+
+/** Points for one table row under the named rule. */
+function leaguePoints(row, rule = 'frame') {
+  switch (rule) {
+    case 'frame':
+      // One point per frame won.
+      return row.framesFor;
+    case 'match':
+      // 2 for a win, 1 for a draw.
+      return row.won * 2 + row.drawn;
+    case 'match+frame':
+      // 3 for a win, 1 for a draw, plus a point per frame won.
+      return row.won * 3 + row.drawn + row.framesFor;
+    default:
+      return row.framesFor;
+  }
+}
+
+const POINTS_RULES = [
+  { id: 'frame', label: '1 point per frame won' },
+  { id: 'match', label: '2 for a win, 1 for a draw' },
+  { id: 'match+frame', label: '3 for a win, 1 for a draw, + 1 per frame' },
+];
+
+// ---------------------------------------------------------------------------
+// Player statistics
+// ---------------------------------------------------------------------------
+
+function emptyPlayerRow(player, teamName) {
+  return {
+    playerId: player.id,
+    name: player.name,
+    teamId: player.teamId,
+    teamName,
+    singlesPlayed: 0,
+    singlesWon: 0,
+    doublesPlayed: 0,
+    doublesWon: 0,
+    played: 0,
+    won: 0,
+    lost: 0,
+    racksFor: 0,
+    racksAgainst: 0,
+    rackDiff: 0,
+    winPct: 0,
+    singlesPct: 0,
+    doublesPct: 0,
+  };
+}
+
+/**
+ * Per-player record across completed fixtures. A doubles frame credits both
+ * partners with the frame and its racks.
+ *
+ * @param {object} state
+ * @param {object} [opts]
+ * @param {number} [opts.minFrames] drop players below this many frames played
+ * @param {'all'|'singles'|'doubles'} [opts.discipline]
+ */
+function playerStats(state, opts = {}) {
+  const { minFrames = 0, discipline = 'all' } = opts;
+  const teamNames = new Map((state.teams ?? []).map((t) => [t.id, t.name]));
+  const rows = new Map();
+  for (const p of state.players ?? []) {
+    rows.set(p.id, emptyPlayerRow(p, teamNames.get(p.teamId) ?? '—'));
+  }
+
+  for (const fixture of playedFixtures(state)) {
+    for (const frame of fixture.frames) {
+      const winner = frameWinner(frame.racks);
+      if (!winner) continue;
+      const [hr, ar] = frameRacks(frame.racks);
+      const isDoubles = frame.type === 'D';
+
+      const credit = (ids, side) => {
+        for (const id of ids ?? []) {
+          const row = rows.get(id);
+          if (!row) continue; // player removed from the roster since
+          const wonIt = winner === side;
+          if (isDoubles) {
+            row.doublesPlayed++;
+            if (wonIt) row.doublesWon++;
+          } else {
+            row.singlesPlayed++;
+            if (wonIt) row.singlesWon++;
+          }
+          row.racksFor += side === HOME ? hr : ar;
+          row.racksAgainst += side === HOME ? ar : hr;
+        }
+      };
+
+      credit(frame.home, HOME);
+      credit(frame.away, AWAY);
+    }
+  }
+
+  let list = [...rows.values()];
+  for (const row of list) {
+    row.played = row.singlesPlayed + row.doublesPlayed;
+    row.won = row.singlesWon + row.doublesWon;
+    row.lost = row.played - row.won;
+    row.rackDiff = row.racksFor - row.racksAgainst;
+    row.winPct = pct(row.won, row.played);
+    row.singlesPct = pct(row.singlesWon, row.singlesPlayed);
+    row.doublesPct = pct(row.doublesWon, row.doublesPlayed);
+  }
+
+  if (discipline === 'singles') list = list.filter((r) => r.singlesPlayed > 0);
+  else if (discipline === 'doubles') list = list.filter((r) => r.doublesPlayed > 0);
+
+  const framesOf = (r) =>
+    discipline === 'singles' ? r.singlesPlayed : discipline === 'doubles' ? r.doublesPlayed : r.played;
+  const winsOf = (r) =>
+    discipline === 'singles' ? r.singlesWon : discipline === 'doubles' ? r.doublesWon : r.won;
+
+  list = list.filter((r) => framesOf(r) >= minFrames);
+
+  list.sort((a, b) => {
+    const ap = pct(winsOf(a), framesOf(a));
+    const bp = pct(winsOf(b), framesOf(b));
+    if (bp !== ap) return bp - ap;
+    if (winsOf(b) !== winsOf(a)) return winsOf(b) - winsOf(a);
+    if (b.rackDiff !== a.rackDiff) return b.rackDiff - a.rackDiff;
+    return a.name.localeCompare(b.name);
+  });
+
+  list.forEach((row, i) => {
+    row.rank = i + 1;
+  });
+  return list;
+}
+
+function pct(won, played) {
+  return played > 0 ? Math.round((won / played) * 1000) / 10 : 0;
+}
+
+// ---------------------------------------------------------------------------
+// Validation
+// ---------------------------------------------------------------------------
+
+/**
+ * Check a scorecard before it is saved. Returns a list of human-readable
+ * problems; an empty list means it is good to save.
+ *
+ * House rules enforced: a player may take at most one singles frame, may also
+ * appear in doubles, must be on the roster of the side they are entered for,
+ * and cannot partner themselves.
+ */
+function validateScorecard(fixture, state) {
+  const errors = [];
+  const teamOf = new Map((state.players ?? []).map((p) => [p.id, p.teamId]));
+  const nameOf = new Map((state.players ?? []).map((p) => [p.id, p.name]));
+  const singlesCount = new Map();
+
+  for (const frame of fixture.frames ?? []) {
+    const label = `Frame ${frame.n}`;
+    const expect = frame.type === 'D' ? 2 : 1;
+
+    for (const [side, ids, teamId] of [
+      ['Home', frame.home, fixture.homeId],
+      ['Away', frame.away, fixture.awayId],
+    ]) {
+      const list = ids ?? [];
+      if (list.length !== expect) {
+        errors.push(`${label}: ${side} needs ${expect} player${expect > 1 ? 's' : ''}.`);
+        continue;
+      }
+      if (expect === 2 && list[0] === list[1]) {
+        errors.push(`${label}: ${side} has the same player twice.`);
+      }
+      for (const id of list) {
+        if (!teamOf.has(id)) {
+          errors.push(`${label}: unknown player selected for ${side.toLowerCase()}.`);
+        } else if (teamOf.get(id) !== teamId) {
+          errors.push(`${label}: ${nameOf.get(id)} is not in the ${side.toLowerCase()} team.`);
+        }
+        if (frame.type === 'S') {
+          singlesCount.set(id, (singlesCount.get(id) ?? 0) + 1);
+        }
+      }
+    }
+
+    const racks = frame.racks ?? [];
+    if (racks.length > 3) {
+      errors.push(`${label}: a best-of-3 frame cannot have more than 3 racks.`);
+    }
+    if (racks.some((r) => r !== HOME && r !== AWAY)) {
+      errors.push(`${label}: rack winners must be home or away.`);
+    }
+    if (racks.length && frameWinner(racks) === null) {
+      errors.push(`${label}: no winner yet — needs 2 racks.`);
+    }
+    if (racks.length === 3 && frameWinner(racks.slice(0, 2)) !== null) {
+      errors.push(`${label}: decider recorded but the frame was already won 2-0.`);
+    }
+  }
+
+  for (const [id, count] of singlesCount) {
+    if (count > 1) {
+      errors.push(`${nameOf.get(id) ?? 'A player'} is down for ${count} singles frames — only 1 allowed.`);
+    }
+  }
+
+  return errors;
+}
+
+// ---------------------------------------------------------------------------
+// State helpers
+// ---------------------------------------------------------------------------
+
+function emptyState() {
+  return {
+    v: 1,
+    league: {
+      name: 'Pool League',
+      season: '',
+      startDate: '',
+      intervalDays: 7,
+      pointsRule: 'frame',
+      frameOrder: DEFAULT_FRAME_ORDER.slice(),
+    },
+    teams: [],
+    players: [],
+    fixtures: [],
+  };
+}
+
+/**
+ * Fill in anything a stored state is missing, so an older saved season still
+ * loads after the app is updated.
+ */
+function normaliseState(raw) {
+  const base = emptyState();
+  if (!raw || typeof raw !== 'object') return base;
+  const state = {
+    ...base,
+    ...raw,
+    league: { ...base.league, ...(raw.league ?? {}) },
+    teams: Array.isArray(raw.teams) ? raw.teams : [],
+    players: Array.isArray(raw.players) ? raw.players : [],
+    fixtures: Array.isArray(raw.fixtures) ? raw.fixtures : [],
+  };
+  state.fixtures = state.fixtures.map((f) => ({
+    ...f,
+    note: f.note ?? '',
+    frames: (f.frames ?? []).map((fr, i) => ({
+      n: fr.n ?? i + 1,
+      type: fr.type === 'D' ? 'D' : 'S',
+      home: Array.isArray(fr.home) ? fr.home : [],
+      away: Array.isArray(fr.away) ? fr.away : [],
+      racks: Array.isArray(fr.racks) ? fr.racks.filter((r) => r === HOME || r === AWAY) : [],
+    })),
+  }));
+  return state;
+}
+
+function teamRoster(state, teamId) {
+  return (state.players ?? []).filter((p) => p.teamId === teamId && p.active !== false);
+}
+
+/** Season progress, for the header. */
+function seasonProgress(state) {
+  const fixtures = state.fixtures ?? [];
+  const complete = fixtures.filter(isFixtureComplete).length;
+  const rounds = fixtures.reduce((max, f) => Math.max(max, f.round ?? 0), 0);
+  return {
+    total: fixtures.length,
+    complete,
+    remaining: fixtures.length - complete,
+    rounds,
+    pct: fixtures.length ? Math.round((complete / fixtures.length) * 100) : 0,
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Dates — plain UTC arithmetic, no timezone surprises
+// ---------------------------------------------------------------------------
+
+function parseISO(iso) {
+  const [y, m, d] = String(iso).split('-').map(Number);
+  if (!y || !m || !d) throw new Error(`Invalid date: ${iso}`);
+  return new Date(Date.UTC(y, m - 1, d));
+}
+
+function toISO(date) {
+  return date.toISOString().slice(0, 10);
+}
+
+function addDays(date, days) {
+  const next = new Date(date.getTime());
+  next.setUTCDate(next.getUTCDate() + days);
+  return next;
+}
+
+function formatDate(iso) {
+  if (!iso) return '';
+  try {
+    return parseISO(iso).toLocaleDateString('en-GB', {
+      weekday: 'short',
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+      timeZone: 'UTC',
+    });
+  } catch {
+    return iso;
+  }
+}
+
+function shortDate(iso) {
+  if (!iso) return '';
+  try {
+    return parseISO(iso).toLocaleDateString('en-GB', {
+      day: 'numeric',
+      month: 'short',
+      timeZone: 'UTC',
+    });
+  } catch {
+    return iso;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Frame & Rack — UI layer.
+
+   The build inlines src/league.js above this file inside one IIFE, so every
+   domain function (standings, playerStats, generateSchedule, ...) is in scope
+   by name. Nothing here does league arithmetic itself.
+
+   Saving works by publishing a new version of this very page: the season lives
+   in the <script id="league-state"> block, and renderDocument() rebuilds the
+   whole document around a new copy of it.
+   --------------------------------------------------------------------------- */
+
+var FONT_LINK =
+  '<link rel="preconnect" href="https://fonts.googleapis.com">\n' +
+  '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n' +
+  '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700' +
+  '&family=IBM+Plex+Mono:wght@500;600&family=Source+Sans+3:wght@400;600&display=swap">';
+
+var LOCAL_KEY = 'frame-and-rack:season';
+var STASH_KEY = 'frame-and-rack:ui';
+
+var state = normaliseState(readEmbeddedState());
+
+var ui = {
+  tab: 'table',
+  fixtureId: null,
+  draft: null,
+  errors: [],
+  roundFilter: 'auto',
+  teamFilter: 'all',
+  discipline: 'all',
+  minFrames: 0,
+  playerSort: { key: 'winPct', dir: 'desc' },
+  toast: '',
+  toastTimer: 0,
+  saving: false,
+  exportText: '',
+  exportName: '',
+};
+
+/** 'unknown' until claude.use resolves; then 'artifact', 'local' or 'readonly'. */
+var writeMode = 'unknown';
+var artifactApi = null;
+var downloadsApi = null;
+
+// ---------------------------------------------------------------------------
+// Boot
+// ---------------------------------------------------------------------------
+
+function readEmbeddedState() {
+  var el = document.getElementById('league-state');
+  if (!el) return null;
+  var raw = (el.textContent || '').trim();
+  if (!raw) return null;
+  try {
+    return JSON.parse(raw);
+  } catch (err) {
+    return null;
+  }
+}
+
+function boot() {
+  restoreUi();
+  render();
+
+  var use = window.claude && typeof window.claude.use === 'function' ? window.claude.use : null;
+  if (!use) {
+    settleWriteMode(null);
+    return;
+  }
+
+  use('artifact').then(function (api) {
+    settleWriteMode(api);
+  }, function () {
+    settleWriteMode(null);
+  });
+
+  use('downloads').then(function (api) {
+    downloadsApi = api || null;
+    if (downloadsApi) render();
+  }, function () {});
+}
+
+function settleWriteMode(api) {
+  if (api) {
+    artifactApi = api;
+    writeMode = 'artifact';
+  } else if (location.protocol === 'file:') {
+    // Local development copy — persist to this browser so the app is drivable
+    // outside claude.ai. Never used on a published artifact.
+    writeMode = 'local';
+    var saved = null;
+    try {
+      saved = localStorage.getItem(LOCAL_KEY);
+    } catch (err) {
+      saved = null;
+    }
+    if (saved) {
+      try {
+        state = normaliseState(JSON.parse(saved));
+      } catch (err) {
+        /* keep the embedded season */
+      }
+    }
+  } else {
+    writeMode = 'readonly';
+  }
+  render();
+}
+
+function canWrite() {
+  return writeMode === 'artifact' || writeMode === 'local';
+}
+
+function stashUi() {
+  try {
+    sessionStorage.setItem(
+      STASH_KEY,
+      JSON.stringify({ tab: ui.tab, fixtureId: ui.fixtureId, toast: 'Result saved.' }),
+    );
+  } catch (err) {
+    /* private mode — losing the tab position is survivable */
+  }
+}
+
+function restoreUi() {
+  var raw = null;
+  try {
+    raw = sessionStorage.getItem(STASH_KEY);
+    sessionStorage.removeItem(STASH_KEY);
+  } catch (err) {
+    return;
+  }
+  if (!raw) return;
+  try {
+    var saved = JSON.parse(raw);
+    if (saved.tab) ui.tab = saved.tab;
+    if (saved.fixtureId) ui.fixtureId = saved.fixtureId;
+    if (saved.toast) ui.toast = saved.toast;
+  } catch (err) {
+    /* ignore */
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Saving — publish this page as its own new version
+// ---------------------------------------------------------------------------
+
+function renderDocument(season) {
+  var css = document.getElementById('app-style').textContent;
+  var js = document.getElementById('app-code').textContent;
+  var json = JSON.stringify(season).replace(/</g, '\\u003c');
+
+  return [
+    '<!doctype html>',
+    '<html lang="en">',
+    '<head>',
+    '<meta charset="utf-8">',
+    '<meta name="viewport" content="width=device-width, initial-scale=1">',
+    '<title>Frame &amp; Rack</title>',
+    FONT_LINK,
+    '<style id="app-style">' + css + '<\/style>',
+    '</head>',
+    '<body>',
+    '<div id="root"></div>',
+    '<script type="application/json" id="league-state">' + json + '<\/script>',
+    '<script id="app-code">' + js + '<\/script>',
+    '</body>',
+    '</html>',
+  ].join('\n');
+}
+
+function save(successMessage) {
+  if (writeMode === 'local') {
+    try {
+      localStorage.setItem(LOCAL_KEY, JSON.stringify(state));
+    } catch (err) {
+      toast('Could not save locally — storage is full or blocked.');
+      return Promise.resolve(false);
+    }
+    toast(successMessage);
+    render();
+    return Promise.resolve(true);
+  }
+
+  if (writeMode !== 'artifact') {
+    toast('This view is read-only. Ask the league admin to record it.');
+    return Promise.resolve(false);
+  }
+
+  ui.saving = true;
+  render();
+  stashUi();
+
+  return artifactApi.publish(renderDocument(state)).then(
+    function () {
+      // The shell reloads every open view, including this one.
+      return true;
+    },
+    function (err) {
+      ui.saving = false;
+      var code = err && err.code;
+      if (code === 'conflict') {
+        // Someone published first; every view is already reloading to theirs.
+        toast('Someone else saved first — loading their version.');
+      } else if (
+        code === 'not_writer' ||
+        code === 'not_granted' ||
+        code === 'not_declared' ||
+        code === 'consent_required' ||
+        code === 'capability_disabled' ||
+        code === 'capability_removed'
+      ) {
+        writeMode = 'readonly';
+        toast('This view is read-only. Ask the league admin to record it.');
+      } else if (code === 'rate_limited') {
+        toast('Saving too fast. Wait a few seconds, then save again.');
+      } else if (code === 'too_large') {
+        toast('The season has outgrown one page. Export it and start a new season.');
+      } else {
+        toast('Save failed. Your entry is still here — try again.');
+      }
+      render();
+      return false;
+    },
+  );
+}
+
+function toast(message) {
+  ui.toast = message;
+  clearTimeout(ui.toastTimer);
+  ui.toastTimer = setTimeout(function () {
+    ui.toast = '';
+    render();
+  }, 3600);
+}
+
+// ---------------------------------------------------------------------------
+// Small helpers
+// ---------------------------------------------------------------------------
+
+function esc(value) {
+  return String(value == null ? '' : value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function uid(prefix) {
+  return prefix + Math.random().toString(36).slice(2, 9);
+}
+
+function teamById(id) {
+  for (var i = 0; i < state.teams.length; i++) {
+    if (state.teams[i].id === id) return state.teams[i];
+  }
+  return null;
+}
+
+function teamName(id) {
+  var team = teamById(id);
+  return team ? team.name : 'Unknown team';
+}
+
+function playerName(id) {
+  for (var i = 0; i < state.players.length; i++) {
+    if (state.players[i].id === id) return state.players[i].name;
+  }
+  return '—';
+}
+
+function fixtureById(id) {
+  for (var i = 0; i < state.fixtures.length; i++) {
+    if (state.fixtures[i].id === id) return state.fixtures[i];
+  }
+  return null;
+}
+
+/** First round that still has an unplayed fixture — where the league is now. */
+function currentRound() {
+  for (var i = 0; i < state.fixtures.length; i++) {
+    if (!isFixtureComplete(state.fixtures[i])) return state.fixtures[i].round;
+  }
+  return state.fixtures.length ? state.fixtures[state.fixtures.length - 1].round : 1;
+}
+
+function activeRound() {
+  return ui.roundFilter === 'auto' ? currentRound() : ui.roundFilter;
+}
+
+function teamIds() {
+  return state.teams.map(function (t) {
+    return t.id;
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Render
+// ---------------------------------------------------------------------------
+
+var TABS = [
+  { id: 'table', label: 'Table' },
+  { id: 'fixtures', label: 'Fixtures' },
+  { id: 'players', label: 'Players' },
+  { id: 'teams', label: 'Teams' },
+  { id: 'admin', label: 'Admin' },
+];
+
+function render() {
+  var root = document.getElementById('root');
+  if (!root) return;
+
+  if (!state.teams.length) {
+    root.innerHTML = renderSetup() + renderToast();
+    return;
+  }
+
+  var body;
+  if (ui.tab === 'table') body = renderTable();
+  else if (ui.tab === 'fixtures') body = ui.fixtureId ? renderScorecard() : renderFixtures();
+  else if (ui.tab === 'players') body = renderPlayers();
+  else if (ui.tab === 'teams') body = renderTeams();
+  else body = renderAdmin();
+
+  root.innerHTML = renderTopbar() + '<main>' + body + '</main>' + renderToast();
+}
+
+function renderTopbar() {
+  var progress = seasonProgress(state);
+  var league = state.league;
+
+  var tabs = TABS.map(function (tab) {
+    return (
+      '<button class="tab" role="tab" aria-selected="' +
+      (ui.tab === tab.id) +
+      '" data-act="tab" data-tab="' +
+      tab.id +
+      '">' +
+      esc(tab.label) +
+      '</button>'
+    );
+  }).join('');
+
+  var mode = '';
+  if (writeMode === 'readonly') {
+    mode = '<span class="chip">Read only</span>';
+  } else if (writeMode === 'local') {
+    mode = '<span class="chip brass">Local copy</span>';
+  } else if (writeMode === 'artifact') {
+    mode = '<span class="chip green">Can record results</span>';
+  }
+
+  return (
+    '<header class="topbar"><div class="topbar-inner">' +
+    '<div class="brand">' +
+    '<h1>' +
+    esc(league.name || 'Pool League') +
+    '</h1>' +
+    (league.season ? '<span class="season">' + esc(league.season) + '</span>' : '') +
+    '<span class="brand-spacer"></span>' +
+    mode +
+    '<span class="progress" title="' +
+    progress.complete +
+    ' of ' +
+    progress.total +
+    ' fixtures played">' +
+    '<span class="progress-track"><span class="progress-fill" style="width:' +
+    progress.pct +
+    '%"></span></span>' +
+    progress.complete +
+    '/' +
+    progress.total +
+    '</span>' +
+    '</div>' +
+    '<div class="tabs" role="tablist">' +
+    tabs +
+    '</div>' +
+    '</div></header>'
+  );
+}
+
+function renderToast() {
+  return ui.toast ? '<div class="toast" role="status">' + esc(ui.toast) + '</div>' : '';
+}
+
+// --- Setup ------------------------------------------------------------------
+
+function renderSetup() {
+  var today = new Date().toISOString().slice(0, 10);
+  return (
+    '<main><div class="setup">' +
+    '<p class="eyebrow">First run</p>' +
+    '<h2>Set up the season</h2>' +
+    '<p class="lead">Enter your teams, one per line. Every team plays every other twice — ' +
+    'home and away — and with an odd number of teams one sits out each week. ' +
+    'Each fixture is 7 frames: 5 singles and 2 doubles, every frame a best of 3.</p>' +
+    '<div class="card"><div class="card-body stack">' +
+    '<div class="field-grid">' +
+    '<label class="field"><span>League name</span>' +
+    '<input type="text" id="setup-name" value="Pool League" placeholder="Riverside Pool League"></label>' +
+    '<label class="field"><span>Season</span>' +
+    '<input type="text" id="setup-season" placeholder="2026/27"></label>' +
+    '<label class="field"><span>First match night</span>' +
+    '<input type="date" id="setup-start" value="' +
+    today +
+    '"></label>' +
+    '<label class="field"><span>Days between rounds</span>' +
+    '<input type="number" id="setup-interval" value="7" min="1" max="28"></label>' +
+    '</div>' +
+    '<label class="field"><span>Teams — one per line</span>' +
+    '<textarea id="setup-teams" spellcheck="false" placeholder="The Cue Ball\nRed Lion A\nRed Lion B"></textarea>' +
+    '</label>' +
+    '<div class="row">' +
+    '<button class="btn btn-primary" data-act="setup-generate">Create season</button>' +
+    '<span class="spacer"></span>' +
+    (canWrite()
+      ? ''
+      : '<span class="count">Read-only view — an admin needs to do this.</span>') +
+    '</div>' +
+    '</div></div>' +
+    '</div></main>'
+  );
+}
+
+// --- League table -----------------------------------------------------------
+
+function renderTable() {
+  var rows = standings(state);
+  var rule = state.league.pointsRule || 'frame';
+  var ruleLabel = 'Points';
+  for (var i = 0; i < POINTS_RULES.length; i++) {
+    if (POINTS_RULES[i].id === rule) ruleLabel = POINTS_RULES[i].label;
+  }
+
+  var body = rows
+    .map(function (row) {
+      return (
+        '<tr class="' +
+        (row.position <= 3 ? 'promo' : '') +
+        '">' +
+        '<td class="pos">' +
+        row.position +
+        '</td>' +
+        '<td class="left"><span class="team-cell"><span class="rail"></span>' +
+        esc(row.name) +
+        '</span></td>' +
+        '<td>' +
+        row.played +
+        '</td>' +
+        '<td>' +
+        row.won +
+        '</td>' +
+        '<td>' +
+        row.drawn +
+        '</td>' +
+        '<td>' +
+        row.lost +
+        '</td>' +
+        '<td>' +
+        row.framesFor +
+        '</td>' +
+        '<td>' +
+        row.framesAgainst +
+        '</td>' +
+        '<td class="' +
+        (row.frameDiff > 0 ? 'diff-pos' : row.frameDiff < 0 ? 'diff-neg' : '') +
+        '">' +
+        (row.frameDiff > 0 ? '+' : '') +
+        row.frameDiff +
+        '</td>' +
+        '<td class="pts">' +
+        row.points +
+        '</td>' +
+        '<td class="left">' +
+        renderForm(row.form) +
+        '</td>' +
+        '</tr>'
+      );
+    })
+    .join('');
+
+  return (
+    '<div class="card">' +
+    '<div class="card-head"><h2>League table</h2>' +
+    '<span class="chip">' +
+    esc(ruleLabel) +
+    '</span>' +
+    '<span class="spacer"></span>' +
+    '<span class="count">Tiebreak: frame difference, then head-to-head</span>' +
+    '</div>' +
+    '<div class="scroll-x"><table>' +
+    '<thead><tr>' +
+    '<th class="left">#</th><th class="left">Team</th>' +
+    '<th title="Played">P</th><th title="Won">W</th><th title="Drawn">D</th><th title="Lost">L</th>' +
+    '<th title="Frames won">F</th><th title="Frames lost">A</th><th title="Frame difference">+/−</th>' +
+    '<th title="Points">Pts</th><th class="left">Form</th>' +
+    '</tr></thead>' +
+    '<tbody>' +
+    body +
+    '</tbody></table></div>' +
+    '</div>'
+  );
+}
+
+function renderForm(form) {
+  if (!form.length) return '<span class="count">—</span>';
+  return (
+    '<span class="form">' +
+    form
+      .map(function (r) {
+        return '<b class="' + r.toLowerCase() + '">' + r + '</b>';
+      })
+      .join('') +
+    '</span>'
+  );
+}
+
+// --- Fixtures ---------------------------------------------------------------
+
+function renderFixtures() {
+  var round = activeRound();
+  var rounds = [];
+  for (var i = 0; i < state.fixtures.length; i++) {
+    if (rounds.indexOf(state.fixtures[i].round) === -1) rounds.push(state.fixtures[i].round);
+  }
+  rounds.sort(function (a, b) {
+    return a - b;
+  });
+
+  var roundOptions = rounds
+    .map(function (r) {
+      return '<option value="' + r + '"' + (r === round ? ' selected' : '') + '>Round ' + r + '</option>';
+    })
+    .join('');
+
+  var teamOptions = state.teams
+    .slice()
+    .sort(function (a, b) {
+      return a.name.localeCompare(b.name);
+    })
+    .map(function (t) {
+      return (
+        '<option value="' + t.id + '"' + (ui.teamFilter === t.id ? ' selected' : '') + '>' + esc(t.name) + '</option>'
+      );
+    })
+    .join('');
+
+  var showing = state.fixtures.filter(function (f) {
+    if (ui.teamFilter !== 'all') return f.homeId === ui.teamFilter || f.awayId === ui.teamFilter;
+    return f.round === round;
+  });
+
+  var grouped = [];
+  showing.forEach(function (f) {
+    var group = grouped[grouped.length - 1];
+    if (!group || group.round !== f.round) {
+      group = { round: f.round, date: f.date, fixtures: [] };
+      grouped.push(group);
+    }
+    group.fixtures.push(f);
+  });
+
+  var listing = grouped.length
+    ? grouped
+        .map(function (group) {
+          var byes = byeTeams(state.fixtures, group.round, teamIds());
+          return (
+            '<div class="round-head"><h3>Round ' +
+            group.round +
+            '</h3><span class="date">' +
+            esc(formatDate(group.date)) +
+            '</span></div>' +
+            group.fixtures.map(renderFixtureRow).join('') +
+            (byes.length && ui.teamFilter === 'all'
+              ? '<div class="bye-note">Bye: ' + esc(byes.map(teamName).join(', ')) + '</div>'
+              : '')
+          );
+        })
+        .join('')
+    : '<div class="empty">No fixtures match that filter.</div>';
+
+  return (
+    '<div class="card">' +
+    '<div class="card-head"><h2>Fixtures</h2>' +
+    '<span class="spacer"></span>' +
+    '<label class="row"><span class="eyebrow">Team</span>' +
+    '<select data-act="filter-team"><option value="all">All teams</option>' +
+    teamOptions +
+    '</select></label>' +
+    '<label class="row"><span class="eyebrow">Round</span>' +
+    '<select data-act="filter-round"' +
+    (ui.teamFilter !== 'all' ? ' disabled' : '') +
+    '>' +
+    roundOptions +
+    '</select></label>' +
+    '</div>' +
+    listing +
+    '</div>'
+  );
+}
+
+function renderFixtureRow(fixture) {
+  var result = fixtureResult(fixture);
+  var played = isFixtureComplete(fixture);
+  var score = played
+    ? result.home + '–' + result.away
+    : result.decided > 0
+      ? result.decided + '/7'
+      : '–';
+
+  return (
+    '<button class="fixture" data-act="open-fixture" data-id="' +
+    fixture.id +
+    '">' +
+    '<span class="side">' +
+    esc(teamName(fixture.homeId)) +
+    '</span>' +
+    '<span class="score' +
+    (played ? ' played' : '') +
+    '">' +
+    score +
+    '</span>' +
+    '<span class="side away">' +
+    esc(teamName(fixture.awayId)) +
+    '</span>' +
+    '<span class="go" aria-hidden="true">›</span>' +
+    '</button>'
+  );
+}
+
+// --- Scorecard --------------------------------------------------------------
+
+function cloneFixture(fixture) {
+  return JSON.parse(JSON.stringify(fixture));
+}
+
+function ensureDraft() {
+  if (!ui.draft || ui.draft.id !== ui.fixtureId) {
+    var fixture = fixtureById(ui.fixtureId);
+    ui.draft = fixture ? cloneFixture(fixture) : null;
+    ui.errors = [];
+  }
+  return ui.draft;
+}
+
+function renderScorecard() {
+  var draft = ensureDraft();
+  if (!draft) return '<div class="card"><div class="empty">That fixture no longer exists.</div></div>';
+
+  var result = fixtureResult(draft);
+  var homeRoster = teamRoster(state, draft.homeId);
+  var awayRoster = teamRoster(state, draft.awayId);
+  var editable = canWrite();
+
+  var rosterWarning = '';
+  if (homeRoster.length < 5 || awayRoster.length < 5) {
+    rosterWarning =
+      '<div class="card-body"><div class="notice warn">Each team needs at least 5 players on its roster ' +
+      'to fill the singles frames. Add them on the Teams tab.</div></div>';
+  }
+
+  var frames = draft.frames
+    .map(function (frame, index) {
+      return renderFrame(frame, index, draft, homeRoster, awayRoster, editable);
+    })
+    .join('');
+
+  var errors = ui.errors.length
+    ? '<div class="card-body"><div class="notice error"><strong>Check the card before saving</strong>' +
+      '<ul>' +
+      ui.errors
+        .map(function (e) {
+          return '<li>' + esc(e) + '</li>';
+        })
+        .join('') +
+      '</ul></div></div>'
+    : '';
+
+  return (
+    '<div class="row" style="margin-bottom:14px">' +
+    '<button class="btn btn-sm" data-act="back">‹ All fixtures</button>' +
+    '<span class="chip">Round ' +
+    draft.round +
+    '</span>' +
+    '<span class="chip">' +
+    esc(formatDate(draft.date)) +
+    '</span>' +
+    '</div>' +
+    '<div class="card">' +
+    '<div class="scoreline">' +
+    '<span class="team">' +
+    esc(teamName(draft.homeId)) +
+    '</span>' +
+    '<span class="tally">' +
+    result.home +
+    ' – ' +
+    result.away +
+    '</span>' +
+    '<span class="team away">' +
+    esc(teamName(draft.awayId)) +
+    '</span>' +
+    '</div>' +
+    '<div class="card-body" style="padding-bottom:0">' +
+    '<p class="hint">Tap each rack to award it: once for <strong>H</strong> (' +
+    esc(teamName(draft.homeId)) +
+    '), twice for <strong>A</strong> (' +
+    esc(teamName(draft.awayId)) +
+    '), again to clear. First to 2 racks takes the frame.</p>' +
+    '</div>' +
+    rosterWarning +
+    '<div>' +
+    frames +
+    '</div>' +
+    errors +
+    '<div class="card-body row">' +
+    '<label class="field" style="flex:1;min-width:200px"><span>Note (optional)</span>' +
+    '<input type="text" data-act="note" value="' +
+    esc(draft.note || '') +
+    '" placeholder="Postponed, played at neutral venue, …"' +
+    (editable ? '' : ' disabled') +
+    '></label>' +
+    '</div>' +
+    '<div class="card-body row" style="border-top:1px solid var(--line)">' +
+    '<button class="btn btn-primary" data-act="save-fixture"' +
+    (editable && !ui.saving ? '' : ' disabled') +
+    '>' +
+    (ui.saving ? 'Saving…' : 'Save result') +
+    '</button>' +
+    '<button class="btn" data-act="reset-draft"' +
+    (editable ? '' : ' disabled') +
+    '>Undo changes</button>' +
+    '<span class="spacer"></span>' +
+    '<button class="btn btn-danger btn-sm" data-act="clear-fixture"' +
+    (editable ? '' : ' disabled') +
+    '>Clear card</button>' +
+    '</div>' +
+    '</div>'
+  );
+}
+
+function renderFrame(frame, index, draft, homeRoster, awayRoster, editable) {
+  var winner = frameWinner(frame.racks);
+  var racks = frameRacks(frame.racks);
+  var isDoubles = frame.type === 'D';
+  var slots = isDoubles ? 2 : 1;
+
+  function pick(side, roster, teamId) {
+    var chosen = frame[side] || [];
+    // Narrow screens stack the two sides, so each needs naming; on a wide
+    // screen the scoreline above already puts home left and away right.
+    var html = '<span class="side-tag">' + esc(teamName(teamId)) + '</span>';
+    for (var slot = 0; slot < slots; slot++) {
+      var selected = chosen[slot] || '';
+      if (editable) {
+        var options =
+          '<option value="">' + (isDoubles ? 'Partner ' + (slot + 1) : 'Select player') + '</option>' +
+          roster
+            .map(function (p) {
+              return (
+                '<option value="' + p.id + '"' + (p.id === selected ? ' selected' : '') + '>' + esc(p.name) + '</option>'
+              );
+            })
+            .join('');
+        html +=
+          '<select data-act="set-player" data-frame="' +
+          index +
+          '" data-side="' +
+          side +
+          '" data-slot="' +
+          slot +
+          '" aria-label="' +
+          esc(teamName(teamId)) +
+          ' player for frame ' +
+          frame.n +
+          '">' +
+          options +
+          '</select>';
+      } else {
+        html +=
+          '<span class="name' +
+          (winner === (side === 'home' ? 'H' : 'A') ? ' won' : '') +
+          '">' +
+          (selected ? esc(playerName(selected)) : '<span class="count">—</span>') +
+          '</span>';
+      }
+    }
+    return html;
+  }
+
+  var rackButtons = '';
+  for (var slot = 0; slot < 3; slot++) {
+    var value = frame.racks[slot] || '';
+    var decidedBefore = frameWinner(frame.racks.slice(0, slot)) !== null;
+    var cls = 'rack' + (value === 'H' ? ' h' : value === 'A' ? ' a' : '') + (decidedBefore ? ' dead' : '');
+    rackButtons +=
+      '<button class="' +
+      cls +
+      '" data-act="rack" data-frame="' +
+      index +
+      '" data-slot="' +
+      slot +
+      '"' +
+      (editable && !decidedBefore ? '' : ' disabled') +
+      ' aria-label="Rack ' +
+      (slot + 1) +
+      ' of frame ' +
+      frame.n +
+      '">' +
+      (value || (slot + 1)) +
+      '</button>';
+  }
+
+  return (
+    '<div class="frame">' +
+    '<div class="frame-no">' +
+    '<span class="n">' +
+    frame.n +
+    '</span>' +
+    '<span class="chip ' +
+    (isDoubles ? 'blue' : 'green') +
+    '">' +
+    (isDoubles ? 'Dbl' : 'Sgl') +
+    '</span>' +
+    '</div>' +
+    '<div class="pick home">' +
+    pick('home', homeRoster, draft.homeId) +
+    '</div>' +
+    '<div class="frame-score">' +
+    '<div class="racks">' +
+    rackButtons +
+    '</div>' +
+    '<div class="frame-result">' +
+    (winner ? racks[0] + '–' + racks[1] + ' to ' + (winner === 'H' ? 'home' : 'away') : 'not played') +
+    '</div>' +
+    '</div>' +
+    '<div class="pick away">' +
+    pick('away', awayRoster, draft.awayId) +
+    '</div>' +
+    '</div>'
+  );
+}
+
+// --- Players ----------------------------------------------------------------
+
+var PLAYER_COLUMNS = [
+  { key: 'name', label: 'Player', left: true },
+  { key: 'teamName', label: 'Team', left: true },
+  { key: 'played', label: 'P' },
+  { key: 'won', label: 'W' },
+  { key: 'lost', label: 'L' },
+  { key: 'winPct', label: 'Win %' },
+  { key: 'singlesPlayed', label: 'Sgl' },
+  { key: 'singlesPct', label: 'Sgl %' },
+  { key: 'doublesPlayed', label: 'Dbl' },
+  { key: 'doublesPct', label: 'Dbl %' },
+  { key: 'rackDiff', label: 'Racks +/−' },
+];
+
+function renderPlayers() {
+  var rows = playerStats(state, { discipline: ui.discipline, minFrames: Number(ui.minFrames) || 0 });
+  var sort = ui.playerSort;
+
+  rows.sort(function (a, b) {
+    var av = a[sort.key];
+    var bv = b[sort.key];
+    var cmp;
+    if (typeof av === 'string' || typeof bv === 'string') {
+      cmp = String(av).localeCompare(String(bv));
+    } else {
+      cmp = (av || 0) - (bv || 0);
+    }
+    return sort.dir === 'asc' ? cmp : -cmp;
+  });
+
+  var head = PLAYER_COLUMNS.map(function (col) {
+    var active = sort.key === col.key;
+    return (
+      '<th class="sortable' +
+      (col.left ? ' left' : '') +
+      '" data-act="sort-players" data-key="' +
+      col.key +
+      '"' +
+      (active ? ' aria-sort="' + (sort.dir === 'asc' ? 'ascending' : 'descending') + '"' : '') +
+      '>' +
+      esc(col.label) +
+      (active ? (sort.dir === 'asc' ? ' ▲' : ' ▼') : '') +
+      '</th>'
+    );
+  }).join('');
+
+  var body = rows.length
+    ? rows
+        .map(function (row) {
+          return (
+            '<tr>' +
+            '<td class="left"><strong>' +
+            esc(row.name) +
+            '</strong></td>' +
+            '<td class="left">' +
+            esc(row.teamName) +
+            '</td>' +
+            '<td>' +
+            row.played +
+            '</td><td>' +
+            row.won +
+            '</td><td>' +
+            row.lost +
+            '</td>' +
+            '<td class="pts">' +
+            row.winPct.toFixed(1) +
+            '</td>' +
+            '<td>' +
+            row.singlesPlayed +
+            '</td><td>' +
+            row.singlesPct.toFixed(1) +
+            '</td>' +
+            '<td>' +
+            row.doublesPlayed +
+            '</td><td>' +
+            row.doublesPct.toFixed(1) +
+            '</td>' +
+            '<td class="' +
+            (row.rackDiff > 0 ? 'diff-pos' : row.rackDiff < 0 ? 'diff-neg' : '') +
+            '">' +
+            (row.rackDiff > 0 ? '+' : '') +
+            row.rackDiff +
+            '</td>' +
+            '</tr>'
+          );
+        })
+        .join('')
+    : '<tr><td class="left" colspan="' + PLAYER_COLUMNS.length + '"><div class="empty">No players match those filters yet.</div></td></tr>';
+
+  return (
+    '<div class="card">' +
+    '<div class="card-head"><h2>Players</h2>' +
+    '<span class="spacer"></span>' +
+    '<label class="row"><span class="eyebrow">Frames</span>' +
+    '<select data-act="filter-discipline">' +
+    ['all', 'singles', 'doubles']
+      .map(function (d) {
+        return (
+          '<option value="' +
+          d +
+          '"' +
+          (ui.discipline === d ? ' selected' : '') +
+          '>' +
+          (d === 'all' ? 'All frames' : d === 'singles' ? 'Singles only' : 'Doubles only') +
+          '</option>'
+        );
+      })
+      .join('') +
+    '</select></label>' +
+    '<label class="row"><span class="eyebrow">Min played</span>' +
+    '<input type="number" min="0" max="60" value="' +
+    Number(ui.minFrames) +
+    '" data-act="filter-minframes" style="width:74px"></label>' +
+    '</div>' +
+    '<div class="scroll-x"><table><thead><tr>' +
+    head +
+    '</tr></thead><tbody>' +
+    body +
+    '</tbody></table></div>' +
+    '</div>'
+  );
+}
+
+// --- Teams ------------------------------------------------------------------
+
+function renderTeams() {
+  var table = standings(state);
+  var recordOf = {};
+  table.forEach(function (row) {
+    recordOf[row.teamId] = row;
+  });
+  var stats = playerStats(state);
+  var statOf = {};
+  stats.forEach(function (row) {
+    statOf[row.playerId] = row;
+  });
+
+  var editable = canWrite();
+
+  var cards = state.teams
+    .slice()
+    .sort(function (a, b) {
+      return a.name.localeCompare(b.name);
+    })
+    .map(function (team) {
+      var roster = state.players.filter(function (p) {
+        return p.teamId === team.id;
+      });
+      var record = recordOf[team.id];
+
+      var players = roster.length
+        ? roster
+            .map(function (p) {
+              var s = statOf[p.id];
+              return (
+                '<li><span class="pname">' +
+                esc(p.name) +
+                '</span><span class="rec">' +
+                (s && s.played ? s.won + '/' + s.played : '0/0') +
+                '</span>' +
+                (editable
+                  ? '<button class="icon-btn" data-act="remove-player" data-id="' +
+                    p.id +
+                    '" aria-label="Remove ' +
+                    esc(p.name) +
+                    '">×</button>'
+                  : '') +
+                '</li>'
+              );
+            })
+            .join('')
+        : '<li><span class="count">No players yet.</span></li>';
+
+      return (
+        '<div class="team-card">' +
+        '<div class="row"><h3>' +
+        esc(team.name) +
+        '</h3><span class="spacer"></span>' +
+        (record ? '<span class="chip green">' + record.points + ' pts</span>' : '') +
+        '</div>' +
+        (record
+          ? '<div class="count">P' +
+            record.played +
+            ' · W' +
+            record.won +
+            ' · L' +
+            record.lost +
+            ' · frames ' +
+            record.framesFor +
+            '–' +
+            record.framesAgainst +
+            '</div>' +
+            renderForm(record.form)
+          : '') +
+        '<ul class="roster">' +
+        players +
+        '</ul>' +
+        (editable
+          ? '<div class="row">' +
+            '<input type="text" data-role="new-player" data-team="' +
+            team.id +
+            '" placeholder="Add player" style="flex:1;min-width:0">' +
+            '<button class="btn btn-sm" data-act="add-player" data-team="' +
+            team.id +
+            '">Add</button>' +
+            '</div>'
+          : '') +
+        '</div>'
+      );
+    })
+    .join('');
+
+  return (
+    '<div class="stack">' +
+    '<div class="card"><div class="card-head"><h2>Teams &amp; rosters</h2>' +
+    '<span class="spacer"></span><span class="count">' +
+    state.teams.length +
+    ' teams · ' +
+    state.players.length +
+    ' players</span></div>' +
+    '<div class="card-body"><p class="hint">A player may take one singles frame and still ' +
+    'partner a doubles frame in the same match. The record beside each name is frames won of frames played.</p></div>' +
+    '</div>' +
+    '<div class="team-grid">' +
+    cards +
+    '</div>' +
+    '</div>'
+  );
+}
+
+// --- Admin ------------------------------------------------------------------
+
+function renderAdmin() {
+  var league = state.league;
+  var editable = canWrite();
+  var progress = seasonProgress(state);
+
+  var ruleOptions = POINTS_RULES.map(function (rule) {
+    return (
+      '<option value="' +
+      rule.id +
+      '"' +
+      (league.pointsRule === rule.id ? ' selected' : '') +
+      '>' +
+      esc(rule.label) +
+      '</option>'
+    );
+  }).join('');
+
+  var exportPanel =
+    '<div class="card"><div class="card-head"><h2>Export</h2><span class="spacer"></span>' +
+    '<button class="btn btn-sm" data-act="export" data-kind="table">League table (CSV)</button>' +
+    '<button class="btn btn-sm" data-act="export" data-kind="frames">Every frame (CSV)</button>' +
+    '<button class="btn btn-sm" data-act="export" data-kind="json">Season (JSON)</button>' +
+    '</div>' +
+    (ui.exportText
+      ? '<div class="card-body stack">' +
+        '<div class="row"><span class="chip">' +
+        esc(ui.exportName) +
+        '</span><span class="spacer"></span>' +
+        (downloadsApi ? '<button class="btn btn-sm" data-act="download">Download file</button>' : '') +
+        '<button class="btn btn-sm" data-act="copy-export">Copy to clipboard</button></div>' +
+        '<textarea readonly rows="10" id="export-box">' +
+        esc(ui.exportText) +
+        '</textarea></div>'
+      : '<div class="card-body"><p class="hint">Pick a format to produce a copyable file — ' +
+        'useful for the league website, a printed table, or a backup before a season rolls over.</p></div>') +
+    '</div>';
+
+  if (!editable) {
+    return (
+      '<div class="stack">' +
+      '<div class="card"><div class="card-body">' +
+      '<div class="notice info">You are viewing the league read-only. Results, teams and settings ' +
+      'can only be changed by an admin with edit access to this page.</div>' +
+      '</div></div>' +
+      exportPanel +
+      '</div>'
+    );
+  }
+
+  return (
+    '<div class="stack">' +
+    '<div class="card">' +
+    '<div class="card-head"><h2>League settings</h2></div>' +
+    '<div class="card-body stack">' +
+    '<div class="field-grid">' +
+    '<label class="field"><span>League name</span>' +
+    '<input type="text" data-act="set-name" value="' +
+    esc(league.name) +
+    '"></label>' +
+    '<label class="field"><span>Season</span>' +
+    '<input type="text" data-act="set-season" value="' +
+    esc(league.season) +
+    '"></label>' +
+    '<label class="field"><span>Points</span>' +
+    '<select data-act="set-rule">' +
+    ruleOptions +
+    '</select></label>' +
+    '</div>' +
+    '<p class="hint">Changing the points rule recalculates the whole season immediately — ' +
+    'nothing is stored as a total, so the table is always rebuilt from the frames.</p>' +
+    '<div class="row"><button class="btn btn-primary" data-act="save-settings"' +
+    (ui.saving ? ' disabled' : '') +
+    '>' +
+    (ui.saving ? 'Saving…' : 'Save settings') +
+    '</button></div>' +
+    '</div></div>' +
+
+    '<div class="card">' +
+    '<div class="card-head"><h2>Teams</h2><span class="spacer"></span>' +
+    '<span class="count">' +
+    state.teams.length +
+    ' teams · ' +
+    progress.rounds +
+    ' rounds · ' +
+    progress.total +
+    ' fixtures</span></div>' +
+    '<div class="card-body stack">' +
+    '<div class="row">' +
+    '<input type="text" data-role="new-team" placeholder="New team name" style="flex:1;min-width:0">' +
+    '<button class="btn btn-sm" data-act="add-team">Add team</button>' +
+    '</div>' +
+    '<p class="hint">Adding or removing a team after the season starts does not reshuffle the ' +
+    'existing fixtures. Regenerate below if you need a fresh schedule — results are cleared.</p>' +
+    '</div></div>' +
+
+    '<div class="card">' +
+    '<div class="card-head"><h2>Schedule</h2></div>' +
+    '<div class="card-body stack">' +
+    '<div class="field-grid">' +
+    '<label class="field"><span>First match night</span>' +
+    '<input type="date" id="sched-start" value="' +
+    esc(league.startDate) +
+    '"></label>' +
+    '<label class="field"><span>Days between rounds</span>' +
+    '<input type="number" id="sched-interval" min="1" max="28" value="' +
+    Number(league.intervalDays || 7) +
+    '"></label>' +
+    '</div>' +
+    '<label class="field"><span>Skip these dates — one per line (holidays, cup nights)</span>' +
+    '<textarea id="sched-skip" rows="3" spellcheck="false" placeholder="2026-12-21&#10;2026-12-28">' +
+    esc((league.skipDates || []).join('\n')) +
+    '</textarea></label>' +
+    '<div class="row">' +
+    '<button class="btn" data-act="redate">Re-date rounds</button>' +
+    '<span class="count">Keeps every result, just moves the dates.</span>' +
+    '</div>' +
+    '<div class="row" style="border-top:1px solid var(--line);padding-top:14px">' +
+    '<button class="btn btn-danger" data-act="regenerate">Regenerate schedule</button>' +
+    '<span class="count">Rebuilds all fixtures and <strong>erases every result</strong>.</span>' +
+    '</div>' +
+    '</div></div>' +
+
+    exportPanel +
+
+    '<div class="card"><div class="card-head"><h2>Import</h2></div>' +
+    '<div class="card-body stack">' +
+    '<label class="field"><span>Paste a season JSON export to restore it</span>' +
+    '<textarea id="import-box" rows="4" spellcheck="false" placeholder="{&quot;v&quot;:1,…}"></textarea></label>' +
+    '<div class="row"><button class="btn btn-danger" data-act="import">Replace season with this</button></div>' +
+    '</div></div>' +
+    '</div>'
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Export helpers
+// ---------------------------------------------------------------------------
+
+function csvCell(value) {
+  var text = String(value == null ? '' : value);
+  return /[",\n]/.test(text) ? '"' + text.replace(/"/g, '""') + '"' : text;
+}
+
+function csvFrom(rows) {
+  return rows
+    .map(function (row) {
+      return row.map(csvCell).join(',');
+    })
+    .join('\n');
+}
+
+function buildExport(kind) {
+  if (kind === 'json') {
+    return { name: 'season.json', text: JSON.stringify(state, null, 2) };
+  }
+
+  if (kind === 'table') {
+    var rows = [
+      ['Position', 'Team', 'Played', 'Won', 'Drawn', 'Lost', 'FramesFor', 'FramesAgainst', 'FrameDiff', 'Points'],
+    ];
+    standings(state).forEach(function (row) {
+      rows.push([
+        row.position,
+        row.name,
+        row.played,
+        row.won,
+        row.drawn,
+        row.lost,
+        row.framesFor,
+        row.framesAgainst,
+        row.frameDiff,
+        row.points,
+      ]);
+    });
+    return { name: 'league-table.csv', text: csvFrom(rows) };
+  }
+
+  var frameRows = [
+    ['Round', 'Date', 'Home', 'Away', 'Frame', 'Type', 'HomePlayers', 'AwayPlayers', 'Racks', 'Winner'],
+  ];
+  state.fixtures.forEach(function (fixture) {
+    fixture.frames.forEach(function (frame) {
+      var winner = frameWinner(frame.racks);
+      frameRows.push([
+        fixture.round,
+        fixture.date,
+        teamName(fixture.homeId),
+        teamName(fixture.awayId),
+        frame.n,
+        frame.type === 'D' ? 'Doubles' : 'Singles',
+        (frame.home || []).map(playerName).join(' & '),
+        (frame.away || []).map(playerName).join(' & '),
+        frameRacks(frame.racks).join('-'),
+        winner === 'H' ? 'Home' : winner === 'A' ? 'Away' : '',
+      ]);
+    });
+  });
+  return { name: 'frames.csv', text: csvFrom(frameRows) };
+}
+
+// ---------------------------------------------------------------------------
+// Actions
+// ---------------------------------------------------------------------------
+
+function applySchedule(teams, startDate, intervalDays, skipDates) {
+  state.fixtures = generateSchedule(
+    teams.map(function (t) {
+      return t.id;
+    }),
+    startDate,
+    { intervalDays: intervalDays, skipDates: skipDates, frameOrder: state.league.frameOrder },
+  );
+}
+
+function onSetupGenerate() {
+  var names = (document.getElementById('setup-teams').value || '')
+    .split('\n')
+    .map(function (line) {
+      return line.trim();
+    })
+    .filter(Boolean);
+
+  if (names.length < 2) {
+    toast('Enter at least two team names, one per line.');
+    render();
+    return;
+  }
+
+  var startDate = document.getElementById('setup-start').value;
+  if (!startDate) {
+    toast('Pick the date of the first match night.');
+    render();
+    return;
+  }
+
+  state.league.name = document.getElementById('setup-name').value.trim() || 'Pool League';
+  state.league.season = document.getElementById('setup-season').value.trim();
+  state.league.startDate = startDate;
+  state.league.intervalDays = Number(document.getElementById('setup-interval').value) || 7;
+  state.league.skipDates = [];
+
+  state.teams = names.map(function (name) {
+    return { id: uid('tm_'), name: name };
+  });
+  state.players = [];
+  applySchedule(state.teams, startDate, state.league.intervalDays, []);
+
+  ui.tab = 'fixtures';
+  save('Season created — ' + state.fixtures.length + ' fixtures.');
+}
+
+function onSaveFixture() {
+  var draft = ensureDraft();
+  if (!draft) return;
+
+  ui.errors = validateScorecard(draft, state);
+  if (ui.errors.length) {
+    render();
+    return;
+  }
+
+  draft.status = isFixtureComplete(draft) ? 'played' : 'scheduled';
+  for (var i = 0; i < state.fixtures.length; i++) {
+    if (state.fixtures[i].id === draft.id) {
+      state.fixtures[i] = cloneFixture(draft);
+      break;
+    }
+  }
+  save('Result saved.');
+}
+
+function onExport(kind) {
+  var out = buildExport(kind);
+  ui.exportText = out.text;
+  ui.exportName = out.name;
+  render();
+}
+
+function onDownload() {
+  if (!downloadsApi || !ui.exportText) return;
+  downloadsApi.save({ filename: ui.exportName, data: ui.exportText }).then(
+    function () {
+      toast('Saved ' + ui.exportName + '.');
+    },
+    function () {
+      toast('Download declined or unavailable — copy the text instead.');
+      render();
+    },
+  );
+}
+
+function onCopyExport() {
+  var box = document.getElementById('export-box');
+  if (!box) return;
+  var done = function () {
+    toast('Copied ' + ui.exportName + '.');
+  };
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(ui.exportText).then(done, function () {
+      box.select();
+      toast('Press Ctrl/Cmd+C to copy.');
+    });
+  } else {
+    box.select();
+    toast('Press Ctrl/Cmd+C to copy.');
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Event wiring — one delegated listener per event type
+// ---------------------------------------------------------------------------
+
+function actionTarget(event) {
+  var el = event.target;
+  while (el && el !== document.body) {
+    if (el.getAttribute && el.getAttribute('data-act')) return el;
+    el = el.parentNode;
+  }
+  return null;
+}
+
+document.addEventListener('click', function (event) {
+  var el = actionTarget(event);
+  if (!el) return;
+  var act = el.getAttribute('data-act');
+
+  if (act === 'tab') {
+    ui.tab = el.getAttribute('data-tab');
+    ui.fixtureId = null;
+    ui.draft = null;
+    render();
+    return;
+  }
+
+  if (act === 'open-fixture') {
+    ui.fixtureId = el.getAttribute('data-id');
+    ui.draft = null;
+    ui.errors = [];
+    render();
+    return;
+  }
+
+  if (act === 'back') {
+    ui.fixtureId = null;
+    ui.draft = null;
+    ui.errors = [];
+    render();
+    return;
+  }
+
+  if (act === 'rack') {
+    var draft = ensureDraft();
+    if (!draft || !canWrite()) return;
+    var frame = draft.frames[Number(el.getAttribute('data-frame'))];
+    var slot = Number(el.getAttribute('data-slot'));
+    var racks = frame.racks.slice();
+    while (racks.length < slot) racks.push('H');
+    var current = racks[slot] || '';
+    var next = current === '' ? 'H' : current === 'H' ? 'A' : '';
+    if (next === '') racks = racks.slice(0, slot);
+    else racks[slot] = next;
+    frame.racks = racks.slice(0, 3);
+    ui.errors = [];
+    render();
+    return;
+  }
+
+  if (act === 'save-fixture') {
+    onSaveFixture();
+    return;
+  }
+
+  if (act === 'reset-draft') {
+    ui.draft = null;
+    ui.errors = [];
+    render();
+    return;
+  }
+
+  if (act === 'clear-fixture') {
+    var current = ensureDraft();
+    if (!current) return;
+    current.frames.forEach(function (f) {
+      f.racks = [];
+    });
+    ui.errors = [];
+    render();
+    return;
+  }
+
+  if (act === 'setup-generate') {
+    onSetupGenerate();
+    return;
+  }
+
+  if (act === 'add-player') {
+    var teamId = el.getAttribute('data-team');
+    var input = document.querySelector('[data-role="new-player"][data-team="' + teamId + '"]');
+    var name = input && input.value.trim();
+    if (!name) {
+      toast('Type a player name first.');
+      render();
+      return;
+    }
+    state.players.push({ id: uid('p_'), teamId: teamId, name: name, active: true });
+    save('Added ' + name + '.');
+    return;
+  }
+
+  if (act === 'remove-player') {
+    var playerId = el.getAttribute('data-id');
+    var removed = playerName(playerId);
+    state.players = state.players.filter(function (p) {
+      return p.id !== playerId;
+    });
+    save('Removed ' + removed + '. Frames already played keep their score.');
+    return;
+  }
+
+  if (act === 'add-team') {
+    var teamInput = document.querySelector('[data-role="new-team"]');
+    var teamNameValue = teamInput && teamInput.value.trim();
+    if (!teamNameValue) {
+      toast('Type a team name first.');
+      render();
+      return;
+    }
+    state.teams.push({ id: uid('tm_'), name: teamNameValue });
+    save('Added ' + teamNameValue + '. Regenerate the schedule to give them fixtures.');
+    return;
+  }
+
+  if (act === 'save-settings') {
+    save('Settings saved.');
+    return;
+  }
+
+  if (act === 'redate') {
+    var startDate = document.getElementById('sched-start').value;
+    if (!startDate) {
+      toast('Pick a start date first.');
+      render();
+      return;
+    }
+    var interval = Number(document.getElementById('sched-interval').value) || 7;
+    var skips = readSkipDates();
+    var rounds = 0;
+    state.fixtures.forEach(function (f) {
+      if (f.round > rounds) rounds = f.round;
+    });
+    var dates = roundDates(startDate, rounds, interval, skips);
+    state.fixtures.forEach(function (f) {
+      f.date = dates[f.round - 1];
+    });
+    state.league.startDate = startDate;
+    state.league.intervalDays = interval;
+    state.league.skipDates = skips;
+    save('Rounds re-dated.');
+    return;
+  }
+
+  if (act === 'regenerate') {
+    if (!window.confirm('Rebuild every fixture and erase all recorded results?')) return;
+    var start = document.getElementById('sched-start').value || state.league.startDate;
+    if (!start) {
+      toast('Pick a start date first.');
+      render();
+      return;
+    }
+    var gap = Number(document.getElementById('sched-interval').value) || 7;
+    var skipList = readSkipDates();
+    state.league.startDate = start;
+    state.league.intervalDays = gap;
+    state.league.skipDates = skipList;
+    applySchedule(state.teams, start, gap, skipList);
+    save('Schedule rebuilt — ' + state.fixtures.length + ' fixtures.');
+    return;
+  }
+
+  if (act === 'export') {
+    onExport(el.getAttribute('data-kind'));
+    return;
+  }
+
+  if (act === 'download') {
+    onDownload();
+    return;
+  }
+
+  if (act === 'copy-export') {
+    onCopyExport();
+    return;
+  }
+
+  if (act === 'import') {
+    var box = document.getElementById('import-box');
+    var text = box && box.value.trim();
+    if (!text) {
+      toast('Paste a season JSON export first.');
+      render();
+      return;
+    }
+    var parsed;
+    try {
+      parsed = JSON.parse(text);
+    } catch (err) {
+      toast('That is not valid JSON.');
+      render();
+      return;
+    }
+    if (!window.confirm('Replace the entire season with the pasted export?')) return;
+    state = normaliseState(parsed);
+    save('Season imported.');
+    return;
+  }
+
+  if (act === 'sort-players') {
+    var key = el.getAttribute('data-key');
+    if (ui.playerSort.key === key) {
+      ui.playerSort.dir = ui.playerSort.dir === 'asc' ? 'desc' : 'asc';
+    } else {
+      ui.playerSort = { key: key, dir: key === 'name' || key === 'teamName' ? 'asc' : 'desc' };
+    }
+    render();
+  }
+});
+
+document.addEventListener('change', function (event) {
+  var el = actionTarget(event);
+  if (!el) return;
+  var act = el.getAttribute('data-act');
+
+  if (act === 'set-player') {
+    var draft = ensureDraft();
+    if (!draft) return;
+    var frame = draft.frames[Number(el.getAttribute('data-frame'))];
+    var side = el.getAttribute('data-side');
+    var slot = Number(el.getAttribute('data-slot'));
+    var list = (frame[side] || []).slice();
+    while (list.length <= slot) list.push('');
+    list[slot] = el.value;
+    frame[side] = list.filter(Boolean);
+    ui.errors = [];
+    render();
+    return;
+  }
+
+  if (act === 'filter-round') {
+    ui.roundFilter = Number(el.value);
+    render();
+    return;
+  }
+
+  if (act === 'filter-team') {
+    ui.teamFilter = el.value;
+    render();
+    return;
+  }
+
+  if (act === 'filter-discipline') {
+    ui.discipline = el.value;
+    render();
+    return;
+  }
+
+  if (act === 'filter-minframes') {
+    ui.minFrames = Number(el.value) || 0;
+    render();
+    return;
+  }
+
+  if (act === 'set-name') {
+    state.league.name = el.value.trim() || 'Pool League';
+    return;
+  }
+
+  if (act === 'set-season') {
+    state.league.season = el.value.trim();
+    return;
+  }
+
+  if (act === 'set-rule') {
+    state.league.pointsRule = el.value;
+    render();
+    return;
+  }
+
+  if (act === 'note') {
+    var current = ensureDraft();
+    if (current) current.note = el.value;
+  }
+});
+
+function readSkipDates() {
+  var box = document.getElementById('sched-skip');
+  if (!box) return state.league.skipDates || [];
+  return (box.value || '')
+    .split('\n')
+    .map(function (line) {
+      return line.trim();
+    })
+    .filter(function (line) {
+      return /^\d{4}-\d{2}-\d{2}$/.test(line);
+    });
+}
+
+boot();
+
+})();</script>
