@@ -1,0 +1,9 @@
+{
+  "staff": "",
+  "start_date": "2026-09-22",
+  "hourly_rate": 80,
+  "currency": "THB",
+  "closed_weekday": "Mon",
+  "notebook_total_hours": 109,
+  "photos": ["page1.jpg", "page2.jpg"]
+}
