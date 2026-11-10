@@ -1,0 +1,30 @@
+day,status,start,finish,written_total,ocr_note
+22,Worked,5:30,11:00,5h30m,
+23,Worked,5:30,11:00,5h30m,
+24,Day off,,,,
+25,Worked,6:00,10:30,4h30m,
+26,Worked,5:30,11:00,5h30m,"Total has a crossed-out figure before ""5h30m"""
+27,Worked,5:00,10:00,5h,
+28,Closed,,,,
+29,Worked,5:30,11:00,5h30m,
+30,Worked,5:30,11:30,6h,
+1,Worked,5:30,11:00,5h30m,Month rolls over after the 30th
+2,Worked,6:00,11:00,5h,
+3,Worked,5:30,10:30,5h,
+4,Worked,5:30,10:30,5h,
+5,Closed,,,,
+6,Worked,6:00,11:00,5h,
+7,Day off,,,,
+8,Worked,5:30,11:00,5h30m,
+9,Worked,5:30,11:00,5h30m,
+10,Worked,5:30,11:30,6h,Page 2 (page number 103)
+11,Worked,5:11,11:14,6h,Clock gives 6h03m; written rounded to 6h
+12,Closed,,,,
+13,Worked,5:31,11:00,5h30m,Clock gives 5h29m; written rounded to 5h30m
+14,Worked,5:31,11:30,6h,Clock gives 5h59m; written rounded to 6h
+15,Day off,,,,
+16,Worked,5:30,11:00,5h30m,
+17,Worked,6:00,12:00,6h,
+18,Worked,5:32,10:30,5h,Clock gives 4h58m; written rounded to 5h
+19,Closed,,,,
+20,Worked,5:30,11:30,6h,
